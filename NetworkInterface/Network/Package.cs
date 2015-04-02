@@ -13,7 +13,7 @@
 using System;
 
 
-namespace NetworkInterface 
+namespace Network 
 {
 	[Serializable]
 	public class Package

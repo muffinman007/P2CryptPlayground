@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkInterface", "NetworkInterface\NetworkInterface.csproj", "{3D65F9AC-10A0-4093-83A5-EC90E3D4CFC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageRelaySystem", "NetworkInterface\MessageRelaySystem.csproj", "{3D65F9AC-10A0-4093-83A5-EC90E3D4CFC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Crypt", "..\..\p2crypt\src\P2Crypt\P2Crypt\P2Crypt.csproj", "{6EE72055-E5BD-4F72-AC32-3F554AC395BB}"
 EndProject
