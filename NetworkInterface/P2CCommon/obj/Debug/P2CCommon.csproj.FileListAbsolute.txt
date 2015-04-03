@@ -1,1 +1,2 @@
 Z:\p2crypt\src\P2CCommon\P2CCommon\obj\Debug\P2CCommon.csprojResolveAssemblyReference.cache
+Z:\p2crypt_network\NetworkInterface\P2CCommon\obj\Debug\P2CCommon.csprojResolveAssemblyReference.cache
