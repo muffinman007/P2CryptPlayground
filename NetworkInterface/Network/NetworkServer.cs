@@ -9,7 +9,7 @@
 #endregion Header
 
 using System;
-using P2CCore;
+
 
 namespace Network 
 {
@@ -58,11 +58,6 @@ namespace Network
 				else{
 					return null;						// should we return an empty package?
 				}
-			}
-
-			private set
-			{
-				package = value;
 			}
 		}
 
