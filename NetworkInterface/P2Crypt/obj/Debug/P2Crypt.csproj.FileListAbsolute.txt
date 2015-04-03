@@ -1,0 +1,5 @@
+Z:\bin\Debug\P2Crypt.dll
+Z:\bin\Debug\P2Crypt.pdb
+Z:\p2crypt_network\NetworkInterface\P2Crypt\obj\Debug\P2Crypt.csprojResolveAssemblyReference.cache
+Z:\p2crypt_network\NetworkInterface\P2Crypt\obj\Debug\P2Crypt.dll
+Z:\p2crypt_network\NetworkInterface\P2Crypt\obj\Debug\P2Crypt.pdb
