@@ -5,34 +5,48 @@
  * This class is the class that will be seralized before it get sent through the net.
  *
  * Can use properties if  you want, can change it around if like you but it must contain a PublicProfile and a byte[]
- *
  */
 
 #endregion Header
 
 using System;
+using P2CCommon;
 
-
-namespace Network 
+namespace P2CNetwork
 {
-	[Serializable]
-	public class Package
-	{
+    [Serializable]
+    public class Package : IPackage {
+
 		#region Fields
 
-		public byte[] data;
-		public string user;				// change string to PublicProfile
+		IPublicProfile publicProfile;
+		byte[] data;
 
 		#endregion Fields
 
-		#region Constructors
 
-		public Package(string user, byte[] data)
-		{
-			this.user = user;
-			this.data = data;
+		#region Properties
+
+		public IPublicProfile PublicProfile {
+			get{ return publicProfile; }
+			private set{ publicProfile = value; }
 		}
 
-		#endregion Constructors
+		public byte[] Data {
+			get { throw new NotImplementedException(); }
+		}
+
+        #endregion Properties
+
+        #region Constructors
+
+        public Package(IPublicProfile userProfile, byte[] data)
+        {
+            this.publicProfile = userProfile;
+            this.data = data;
+        }
+
+        #endregion Constructors
+		
 	}
 }

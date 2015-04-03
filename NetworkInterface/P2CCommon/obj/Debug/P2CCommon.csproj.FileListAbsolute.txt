@@ -1,2 +1,6 @@
 Z:\p2crypt\src\P2CCommon\P2CCommon\obj\Debug\P2CCommon.csprojResolveAssemblyReference.cache
 Z:\p2crypt_network\NetworkInterface\P2CCommon\obj\Debug\P2CCommon.csprojResolveAssemblyReference.cache
+Z:\bin\Debug\P2CCommon.dll
+Z:\bin\Debug\P2CCommon.pdb
+Z:\p2crypt_network\NetworkInterface\P2CCommon\obj\Debug\P2CCommon.dll
+Z:\p2crypt_network\NetworkInterface\P2CCommon\obj\Debug\P2CCommon.pdb
