@@ -10,7 +10,7 @@
 using System;
 using P2CCommon;
 
-namespace P2CNetwork
+namespace Network
 {
     [Serializable]
     public class Package : IPackage {
