@@ -1,8 +1,0 @@
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\MessageRelaySystem.csprojResolveAssemblyReference.cache
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\MainWindow.baml
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\MainWindow.g.cs
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\App.g.cs
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\NetworkInterface_MarkupCompile.cache
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\NetworkInterface.g.resources
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\NetworkInterface.Properties.Resources.resources
-Z:\p2crypt_network\NetworkInterface\NetworkInterface\obj\Debug\MessageRelaySystem.csproj.GenerateResource.Cache
