@@ -3,8 +3,6 @@
 /*
  * The delivery package. Signature required.
  * This class is the class that will be seralized before it get sent through the net.
- *
- * Can use properties if  you want, can change it around if like you but it must contain a PublicProfile and a byte[]
  */
 
 #endregion Header
@@ -27,13 +25,14 @@ namespace P2CNetwork
 
 		#region Properties
 
-		public IPublicProfile PublicProfile {
+		public IPublicProfile PublicProfile 
+		{
 			get{ return publicProfile; }
-			private set{ publicProfile = value; }
 		}
 
-		public byte[] Data {
-			get { throw new NotImplementedException(); }
+		public byte[] Data 
+		{
+			get { return data; }
 		}
 
         #endregion Properties
