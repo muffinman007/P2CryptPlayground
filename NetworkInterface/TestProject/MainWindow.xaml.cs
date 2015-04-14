@@ -61,9 +61,7 @@ namespace TestProject {
 					while(true)++counter; 
 				}
 				catch(ThreadAbortException){
-					Task.Factory.StartNew(()=>{
-						MessageBox.Show("Inside thread aborting()");
-					});
+					MessageBox.Show("Inside thread aborting()");
 				}
 			});
 
