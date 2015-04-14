@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
 
 namespace Network 
 {
@@ -22,7 +23,7 @@ namespace Network
 		#region Fields
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
-		bool hasServerStart;
+		//bool hasServerStart;
 
 		// Socket data
 		//int port;
@@ -30,7 +31,8 @@ namespace Network
 
 		Socket server;
 
-		Thread serverThread;
+		CancellationTokenSource tokenSource;
+		Task serverTask;
 
 		Package package;
 
@@ -44,7 +46,7 @@ namespace Network
 			//this.port = port;
 			//this.backlog = backlog;
 			hasPackage = false;
-			hasServerStart = false;
+			//hasServerStart = false;
 
 			IPEndPoint endPoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0], port);
 			server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -84,20 +86,22 @@ namespace Network
 		/// </summary>
 		public void Start()
 		{
-			if(hasServerStart)
+			if(serverTask != null)
 				return;
 
-			serverThread = new Thread(()=>{
+			tokenSource = new CancellationTokenSource();
+			
+			serverTask = Task.Factory.StartNew(()=>{
+				CancellationToken cancelToken = tokenSource.Token;
 				try{
-					while(true){
+					while(!cancelToken.IsCancellationRequested){
 						Socket client = server.Accept();
 					}
 				}
-				catch(ThreadAbortException){
-				}
-			});
+				catch(Exception){}
 
-			hasServerStart = true;
+				Task.Factory.StartNew(()=>{ MessageBox.Show("Debug inside serverTask. exiting."); });
+			});
 		}
 
 
@@ -106,9 +110,15 @@ namespace Network
 		/// </summary>
 		public void Disconnect()
 		{
-			//// TO-DO //testchange
+			if(serverTask == null)
+				return;
 
-			hasServerStart = false;
+			server.Shutdown(SocketShutdown.Both);
+			server.Close();
+
+			tokenSource.Cancel();
+
+			serverTask = null;
 		}
 
 		/// <summary>

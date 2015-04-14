@@ -58,7 +58,8 @@ namespace TestProject {
 			{ 
 
 				try{
-					while(true)++counter; 
+					MessageBox.Show("Server Accepting");
+					while(true)server.Run(); 
 				}
 				catch(ThreadAbortException){
 					MessageBox.Show("Inside thread aborting()");
@@ -84,6 +85,8 @@ namespace TestProject {
 
 
 			try{
+				//thread1.Abort();
+				server.Close();
 				thread1.Abort();
 			}
 			catch(ThreadAbortException){
@@ -97,7 +100,7 @@ namespace TestProject {
 			btnStartTask.IsEnabled = true;		
 		}
 
-		private void btnShowTaskStatus_Click(object sender, RoutedEventArgs e) {
+		private void btnShowTaskStatus_Click(object sender, RoutedEventArgs e){
 			if(t1 == null)
 				return;
 
@@ -123,12 +126,18 @@ namespace TestProject {
 			socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			socket.Bind(new IPEndPoint(IPAddress.Any, 12345));
 			socket.Listen(10);
+			socket.LingerState = new LingerOption(false, 0);
 		}
 
 		public async Task Run(){
 			Socket client;
 
 			client = socket.Accept();
+		}
+
+
+		public void Close(){
+			socket.Close(0);
 		}
 
 		public void CleanUp(){
