@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2CCore", "P2CCore\P2CCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2Crypt", "P2Crypt\P2Crypt.csproj", "{6EE72055-E5BD-4F72-AC32-3F554AC395BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{D323E20E-76DC-4B6E-AAF3-BBCB5998879A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6EE72055-E5BD-4F72-AC32-3F554AC395BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EE72055-E5BD-4F72-AC32-3F554AC395BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE72055-E5BD-4F72-AC32-3F554AC395BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D323E20E-76DC-4B6E-AAF3-BBCB5998879A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D323E20E-76DC-4B6E-AAF3-BBCB5998879A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D323E20E-76DC-4B6E-AAF3-BBCB5998879A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D323E20E-76DC-4B6E-AAF3-BBCB5998879A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
