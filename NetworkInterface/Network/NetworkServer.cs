@@ -25,6 +25,8 @@ namespace Network
 		int port;
 		int backlog;
 
+		SocketServer mainServer;
+
 		Package package;
 
 		#endregion Fields
@@ -38,6 +40,8 @@ namespace Network
 			this.backlog = backlog;
 			hasPackage = false;
 			hasServerStart = false;
+
+			mainServer = new SocketServer(port, backlog);
 		}
 
 		#endregion Constructors
