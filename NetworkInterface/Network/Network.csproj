@@ -37,8 +37,10 @@
   <ItemGroup>
     <Compile Include="NetworkServer.cs" />
     <Compile Include="Package.cs" />
+    <Compile Include="SocketServer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="System" />
     <Reference Include="System.Windows" />
   </ItemGroup>
   <ItemGroup>

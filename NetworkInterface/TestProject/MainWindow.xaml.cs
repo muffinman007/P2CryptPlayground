@@ -28,6 +28,8 @@ namespace TestProject {
 		long counter;
 		Task t1;
 
+		Thread thread1;
+
 		SocketServer server;
 
 		public MainWindow(){
@@ -40,31 +42,57 @@ namespace TestProject {
 			tokenSource = new CancellationTokenSource();
 			cancelToken = tokenSource.Token;
 			counter = 0;
-			t1 = Task.Factory.StartNew(async ()=>
-			{
-				while(!cancelToken.IsCancellationRequested){
-					++counter;
+			//t1 = Task.Factory.StartNew(async ()=>
+			//{
+			//	while(!cancelToken.IsCancellationRequested){
+			//		++counter;
 
 					
-					await server.Run();
-				}
+			//		await server.Run();
+			//	}
 
-				MessageBox.Show("Task is cancelling.");
+			//	MessageBox.Show("Task is cancelling.");
+			//});
+
+			thread1 = new Thread(()=>
+			{ 
+
+				try{
+					while(true)++counter; 
+				}
+				catch(ThreadAbortException){
+					Task.Factory.StartNew(()=>{
+						MessageBox.Show("Inside thread aborting()");
+					});
+				}
 			});
+
+			thread1.Start();
+
 
 			btnStartTask.IsEnabled = false;
 		}
 
 		private void btnCancelTask_Click(object sender, RoutedEventArgs e) {
-			if(t1 == null)
-				return;
+			//if(t1 == null)
+			//	return;
 			
-			tokenSource.Cancel();
+			//tokenSource.Cancel();
 
-			MessageBox.Show("Results:" + Environment.NewLine +
-							"Task: " + t1.ToString() + Environment.NewLine +
-							"Task status:" + t1.Status.ToString() + Environment.NewLine +
-							"counter: " + counter.ToString());
+			//MessageBox.Show("Results:" + Environment.NewLine +
+			//				"Task: " + t1.ToString() + Environment.NewLine +
+			//				"Task status:" + t1.Status.ToString() + Environment.NewLine +
+			//				"counter: " + counter.ToString());
+
+
+			try{
+				thread1.Abort();
+			}
+			catch(ThreadAbortException){
+				MessageBox.Show("Thread.Abort() called");
+			}
+
+			MessageBox.Show("Counter: " + counter);
 
 			counter = 0;			
 
