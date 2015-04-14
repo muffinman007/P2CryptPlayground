@@ -16,6 +16,15 @@
 		<Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="75"/>
 		<Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="90,41,0,0" VerticalAlignment="Top" Width="75"/>
 		<Button x:Name="btnRemoteConnect" Content="Connect " HorizontalAlignment="Left" Margin="330,41,0,0" VerticalAlignment="Top" Width="75"/>
+		<TextBox x:Name="txtChatWindow" HorizontalAlignment="Left" Height="309" Margin="10,68,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="395" VerticalScrollBarVisibility="Auto" IsReadOnly="True" IsReadOnlyCaretVisible="True">
+			<TextBox.BorderBrush>
+				<LinearGradientBrush EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
+					<GradientStop Color="#FFABADB3" Offset="0.05"/>
+					<GradientStop Color="#FFE2E3EA" Offset="0.07"/>
+					<GradientStop Color="#FF0D2C49" Offset="1"/>
+				</LinearGradientBrush>
+			</TextBox.BorderBrush>
+		</TextBox>
 
 	</Grid>
 </Window>
