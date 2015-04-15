@@ -43,7 +43,12 @@ namespace MessageRelaySystem {
 		}
 
 		private void btnStop_Click(object sender, RoutedEventArgs e) {
+			networkServer.Disconnect();
 
+			btnStart.IsEnabled = true;
+
+			btnStop.IsEnabled = false;
+			btnRemoteConnect.IsEnabled = false;
 		}
 
 
