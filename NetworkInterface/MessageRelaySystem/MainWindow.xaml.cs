@@ -21,5 +21,9 @@ namespace MessageRelaySystem {
 		public MainWindow() {
 			InitializeComponent();
 		}
+
+		private void btnStart_Click(object sender, RoutedEventArgs e) {
+
+		}
 	}
 }
