@@ -15,3 +15,7 @@ Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\Network.dll
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCommon.dll
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\Network.pdb
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCommon.pdb
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCore.dll
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2Crypt.dll
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCore.pdb
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2Crypt.pdb

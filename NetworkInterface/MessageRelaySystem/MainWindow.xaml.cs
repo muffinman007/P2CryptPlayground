@@ -66,6 +66,7 @@ namespace MessageRelaySystem {
 
 			btnStop.IsEnabled = false;
 			btnRemoteConnect.IsEnabled = false;
+			btnSend.IsEnabled = false;
 
 			txtStatus.Text = "Server stopped";
 		}
