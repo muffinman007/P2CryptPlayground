@@ -4,7 +4,7 @@
         Title="MainWindow" Height="510" Width="600">
 	<Grid>
 		<Label Content="Nick:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-		<TextBox x:Name="txtNick" HorizontalAlignment="Left" Height="23" Margin="51,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="107"/>
+		<TextBox x:Name="txtNick" HorizontalAlignment="Left" Height="23" Margin="51,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="107" TextChanged="txtNick_TextChanged"/>
 		<Label Content="Remote:" HorizontalAlignment="Left" Margin="172,10,0,0" VerticalAlignment="Top"/>
 		<ComboBox x:Name="cbFirstIP" HorizontalAlignment="Left" Margin="231,10,0,0" VerticalAlignment="Top" Width="37"/>
 		<Label Content="." HorizontalAlignment="Left" Margin="266,15,0,0" VerticalAlignment="Top"/>

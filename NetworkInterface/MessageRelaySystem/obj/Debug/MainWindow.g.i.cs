@@ -175,6 +175,12 @@ namespace MessageRelaySystem {
             {
             case 1:
             this.txtNick = ((System.Windows.Controls.TextBox)(target));
+            
+            #line 7 "..\..\MainWindow.xaml"
+            this.txtNick.TextChanged += new System.Windows.Controls.TextChangedEventHandler(this.txtNick_TextChanged);
+            
+            #line default
+            #line hidden
             return;
             case 2:
             this.cbFirstIP = ((System.Windows.Controls.ComboBox)(target));

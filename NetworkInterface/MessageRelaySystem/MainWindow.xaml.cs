@@ -54,6 +54,17 @@ namespace MessageRelaySystem {
 			txtStatus.Text = "Server stopped";
 		}
 
+		private void txtNick_TextChanged(object sender, TextChangedEventArgs e) {
+			if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
+				btnRemoteConnect.IsEnabled = false;
+				btnSend.IsEnabled = false;
+			}
+			else{
+				btnRemoteConnect.IsEnabled = true;
+				btnSend.IsEnabled = true;
+			}
+		}
+
 
 	}
 }
