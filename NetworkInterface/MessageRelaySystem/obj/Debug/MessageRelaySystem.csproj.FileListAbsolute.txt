@@ -11,3 +11,7 @@ Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySys
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.csproj.GenerateResource.Cache
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.exe
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.pdb
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\Network.dll
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCommon.dll
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\Network.pdb
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\P2CCommon.pdb

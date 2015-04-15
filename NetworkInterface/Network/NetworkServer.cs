@@ -48,7 +48,7 @@ namespace Network
 			hasPackage = false;
 			//hasServerStart = false;
 
-			IPEndPoint endPoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0], port);
+			IPEndPoint endPoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0].MapToIPv4(), port);
 			server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			server.Bind(endPoint);
 			server.LingerState = new LingerOption(false, 0);

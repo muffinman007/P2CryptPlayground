@@ -1,2 +1,12 @@
-Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\Network.exe.config
 Z:\p2crypt_network\NetworkInterface\Network\obj\Debug\Network.csprojResolveAssemblyReference.cache
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\Network.dll.config
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\Network.dll
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\Network.pdb
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2CCommon.dll
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2CCore.dll
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2Crypt.dll
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2CCommon.pdb
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2CCore.pdb
+Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\P2Crypt.pdb
+Z:\p2crypt_network\NetworkInterface\Network\obj\Debug\Network.dll
+Z:\p2crypt_network\NetworkInterface\Network\obj\Debug\Network.pdb
