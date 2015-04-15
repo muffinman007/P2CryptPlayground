@@ -14,6 +14,11 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using System.Collections.Concurrent;
+using System.Runtime.Serialization.Formatters.Binary;
+
+using P2CCore;
+using System.IO;
 
 namespace Network 
 {
@@ -24,12 +29,14 @@ namespace Network
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
 		
-
+		ConcurrentDictionary<string, PublicProfile> buddyConcurrentDict;
+		ConcurrentDictionary<string, Socket>		clientSocketDict;
 
 		Socket server;
 
 		CancellationTokenSource tokenSource;
 		Task serverTask;
+		Task[] sendTask;
 
 		Package package;
 
@@ -39,11 +46,11 @@ namespace Network
 		#region Constructors
 
 		public NetworkServer(int port = 12345, int backlog = 100)
-		{
-			//this.port = port;
-			//this.backlog = backlog;
+		{			
 			hasPackage = false;
-			//hasServerStart = false;
+		
+			buddyConcurrentDict = new ConcurrentDictionary<string,PublicProfile>();
+			clientSocketDict	= new ConcurrentDictionary<string,Socket>();
 
 			IPAddress localIP = null;
 			foreach(var ip in Dns.GetHostAddresses(Dns.GetHostName())){
@@ -138,9 +145,45 @@ namespace Network
 		/// Send the package to all connected node. On fail do nothing.
 		/// </summary>
 		/// <param name="deliveryPackage">The current data user want to send out</param>
-		public void Send(Package deliveryPackage)
+		public async void Send(Package deliveryPackage)
 		{
-			Task.Factory.StartNew(()=>{ MessageBox.Show("Package delivered"); }); 
+			
+			byte[] data = null;
+
+			// might need to handle memory error in the future
+			await Task.Factory.StartNew(()=>{
+				using(MemoryStream ms = new MemoryStream()){
+					BinaryFormatter bf = new BinaryFormatter();
+
+					bf.Serialize(ms, deliveryPackage);
+
+					ms.Seek(0, SeekOrigin.Begin);
+					data = ms.ToArray();
+				}
+			});
+
+
+			// There's a better way to do this so we can catch all the socketException and handle it correctly.
+			// When we catch an exception most likely user had disconnected and we need to update that change
+			// with the program.
+			Task.Factory.StartNew(()=>{
+				Socket client = null;				
+				try{
+					foreach(var outgoing in clientSocketDict){
+						client = outgoing.Value;
+						outgoing.Value.Send(data, 0, data.Length, SocketFlags.None);
+					}
+				}
+				catch(SocketException se){
+					Task.Factory.StartNew(()=>{
+						MessageBox.Show("Error while sending data" + Environment.NewLine +
+										"Remote ip: " + client.RemoteEndPoint.ToString() + Environment.NewLine +
+										"Socket Exception: " + Environment.NewLine +
+										se.Message + Environment.NewLine +
+										"Error Code: " + se.NativeErrorCode + Environment.NewLine);
+					});
+				}
+			});
 		}
 
 
