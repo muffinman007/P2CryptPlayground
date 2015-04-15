@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using Network;
+using P2CCore;
 
 namespace MessageRelaySystem {
 	/// <summary>
@@ -24,6 +25,7 @@ namespace MessageRelaySystem {
 		#region Fields
 
 		NetworkServer networkServer; 
+		UserAccount userAccount;
 
 		#endregion Fields
 
@@ -35,6 +37,8 @@ namespace MessageRelaySystem {
 			networkServer = new NetworkServer();
 			networkServer.Start();
 			
+			userAccount = new UserAccount(){UserNick = txtNick.Text};
+
 			btnStart.IsEnabled = false;
 
 			btnStop.IsEnabled = true;
@@ -58,10 +62,14 @@ namespace MessageRelaySystem {
 			if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
 				btnRemoteConnect.IsEnabled = false;
 				btnSend.IsEnabled = false;
+
+				if(userAccount == null)
+					btnStart.IsEnabled = false;
 			}
 			else{
 				btnRemoteConnect.IsEnabled = true;
 				btnSend.IsEnabled = true;
+				btnStart.IsEnabled = true;
 			}
 		}
 

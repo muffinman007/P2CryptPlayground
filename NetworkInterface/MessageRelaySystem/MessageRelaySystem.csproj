@@ -98,6 +98,10 @@
       <Project>{dfc49d71-d20a-46a0-a85e-8857fcaa8404}</Project>
       <Name>Network</Name>
     </ProjectReference>
+    <ProjectReference Include="..\P2CCore\P2CCore.csproj">
+      <Project>{dbe51873-f540-4852-9b2a-8186bc7bf50e}</Project>
+      <Name>P2CCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
