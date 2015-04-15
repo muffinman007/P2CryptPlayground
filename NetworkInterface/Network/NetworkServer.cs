@@ -34,7 +34,7 @@ namespace Network
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
 		
-		ConcurrentDictionary<string, PublicProfile> buddyConcurrentDict;
+		ConcurrentDictionary<string, IPublicProfile> buddyConcurrentDict;
 		ConcurrentDictionary<string, Socket>		clientSocketDict;
 
 		Socket server;
@@ -176,9 +176,17 @@ namespace Network
 			Task.Factory.StartNew(()=>{
 				Socket client = null;				
 				try{
-					foreach(var outgoing in clientSocketDict){
-						client = outgoing.Value;
-						outgoing.Value.Send(data, 0, data.Length, SocketFlags.None);
+					using(MemoryStream ms = new MemoryStream()){
+						BinaryFormatter bf = new BinaryFormatter();
+
+						foreach(var outgoing in clientSocketDict){
+							client = outgoing.Value;
+
+							Package deliveryPackage = new Package(
+
+
+							outgoing.Value.Send(data, 0, data.Length, SocketFlags.None);
+						}
 					}
 				}
 				catch(SocketException se){
@@ -188,6 +196,12 @@ namespace Network
 										"Socket Exception: " + Environment.NewLine +
 										se.Message + Environment.NewLine +
 										"Error Code: " + se.NativeErrorCode + Environment.NewLine);
+					});
+				}
+				catch(Exception ex){
+					Task.Factory.StartNew(()=>{
+						MessageBox.Show("Error while sending data" + Environment.NewLine +
+										ex.Message + Environment.NewLine);
 					});
 				}
 			});
@@ -224,11 +238,12 @@ namespace Network
 				case PackageStatus.Message:
 					arrivedPackage = deliveryPackage;
 					hasPackage = true;
-					P2CDS(arrivedPackage, null);					// let subscribers know they have a package
+					P2CDS(arrivedPackage, null);					// let subscriber know they have a package
 					break;
 			}
 
-			clientSocketDict.AddOrUpdate(deliveryPackage.PublicProfile.UserNick, client, null);
+			clientSocketDict.GetOrAdd(deliveryPackage.PublicProfile.UserNick, client);
+			buddyConcurrentDict.GetOrAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
 		}
 
 
