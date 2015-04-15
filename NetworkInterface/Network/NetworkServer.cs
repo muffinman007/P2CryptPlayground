@@ -16,6 +16,7 @@ using System.Net.Sockets;
 using System.Windows.Forms;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 using P2CCore;
 using System.IO;
@@ -158,63 +159,55 @@ namespace Network
 		/// <param name="PendingPackageState">The package user is sending out</param>
 		public async void Send<T>(PendingPackageState<T> pendingPackage)
 		{
-			
-			byte[] data = null;
-
-			// might need to handle memory error in the future
-			await Task.Factory.StartNew(()=>{
-				using(MemoryStream ms = new MemoryStream()){
-					BinaryFormatter bf = new BinaryFormatter();
-
-					bf.Serialize(ms, deliveryPackage);
-
-					ms.Seek(0, SeekOrigin.Begin);
-					data = ms.ToArray();
-				}
-			});
-
-
 			// There's a better way to do this so we can catch all the socketException and handle it correctly.
 			// When we catch an exception most likely user had disconnected and we need to update that change
-			// with the program.
-			Task.Factory.StartNew(()=>{
-				Socket client = null;				
-				try{
-					using(MemoryStream ms = new MemoryStream()){
-						BinaryFormatter bf = new BinaryFormatter();
+			// with the program.			
+			Socket client = null;	
+			byte[] outgoingData = null;
 
-						foreach(var outgoing in clientSocketDict){
-							client = outgoing.Value;
+			try{
+				using(MemoryStream ms = new MemoryStream()){            // might need to handle memory error in the future
+					BinaryFormatter bf = new BinaryFormatter();
+						
+					foreach(var outgoingSocket in clientSocketDict){
+						client = outgoingSocket.Value;
 
-							need to create the package for delivery
+						Package deliveryPackage;
 
-							if(pendingPackage.PackageStatus == PackageStatus.Message){
-
-							}
-							else{
-
-							}
-
-							outgoing.Value.Send(data, 0, data.Length, SocketFlags.None);
+						if(pendingPackage.PackageStatus == PackageStatus.Message){
+							IPublicProfile outgoingProfile;
+							buddyConcurrentDict.TryGetValue(outgoingSocket.Key, out outgoingProfile);
+							deliveryPackage = new Package(
+								null, 
+								userNick,
+								PackageStatus.Message,
+								outgoingProfile.Encrypt(Encoding.UTF8.GetBytes((string)pendingPackage.Data))
+							);
 						}
+						else{
+
+						}
+
+						outgoingSocket.Value.Send(data, 0, data.Length, SocketFlags.None);
 					}
 				}
-				catch(SocketException se){
-					Task.Factory.StartNew(()=>{
-						MessageBox.Show("Error while sending data" + Environment.NewLine +
-										"Remote ip: " + client.RemoteEndPoint.ToString() + Environment.NewLine +
-										"Socket Exception: " + Environment.NewLine +
-										se.Message + Environment.NewLine +
-										"Error Code: " + se.NativeErrorCode + Environment.NewLine);
-					});
-				}
-				catch(Exception ex){
-					Task.Factory.StartNew(()=>{
-						MessageBox.Show("Error while sending data" + Environment.NewLine +
-										ex.Message + Environment.NewLine);
-					});
-				}
-			});
+			}
+			catch(SocketException se){
+				Task.Factory.StartNew(()=>{
+					MessageBox.Show("Error while sending data" + Environment.NewLine +
+									"Remote ip: " + client.RemoteEndPoint.ToString() + Environment.NewLine +
+									"Socket Exception: " + Environment.NewLine +
+									se.Message + Environment.NewLine +
+									"Error Code: " + se.NativeErrorCode + Environment.NewLine);
+				});
+			}
+			catch(Exception ex){
+				Task.Factory.StartNew(()=>{
+					MessageBox.Show("Error while sending data" + Environment.NewLine +
+									ex.Message + Environment.NewLine);
+				});
+			}
+			
 		}
 
 
@@ -252,8 +245,8 @@ namespace Network
 					break;
 			}
 
-			clientSocketDict.GetOrAdd(deliveryPackage.PublicProfile.UserNick, client);
-			buddyConcurrentDict.GetOrAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
+			clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
+			buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
 		}
 
 
