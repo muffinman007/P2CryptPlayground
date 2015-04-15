@@ -223,6 +223,12 @@ namespace MessageRelaySystem {
             return;
             case 11:
             this.btnSend = ((System.Windows.Controls.Button)(target));
+            
+            #line 29 "..\..\MainWindow.xaml"
+            this.btnSend.Click += new System.Windows.RoutedEventHandler(this.btnSend_Click);
+            
+            #line default
+            #line hidden
             return;
             case 12:
             this.txtStatus = ((System.Windows.Controls.TextBlock)(target));

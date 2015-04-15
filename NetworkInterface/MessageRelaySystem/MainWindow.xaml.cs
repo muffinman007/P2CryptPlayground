@@ -27,6 +27,7 @@ namespace MessageRelaySystem {
 		NetworkServer networkServer; 
 		UserAccount userAccount;
 
+		int messageSentCounter = 0;
 		#endregion Fields
 
 		public MainWindow() {
@@ -84,6 +85,23 @@ namespace MessageRelaySystem {
 				btnSend.IsEnabled = true;
 				btnStart.IsEnabled = true;
 			}
+		}
+
+		private async void btnSend_Click(object sender, RoutedEventArgs e) {
+			if(String.IsNullOrWhiteSpace(txtMessage.Text) || String.IsNullOrEmpty(txtMessage.Text))
+				return;
+			
+			Package deliveryPackage = new Package(
+				userAccount.PublicProfile, 
+				await Task.Factory.StartNew<Byte[]>(()=>
+					{
+						return userAccount.PublicProfile.Encrypt(Encoding.UTF8.GetBytes(txtMessage.Text));
+					})
+				);
+			
+			networkServer.Send(deliveryPackage);
+
+			txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
 		}
 
 
