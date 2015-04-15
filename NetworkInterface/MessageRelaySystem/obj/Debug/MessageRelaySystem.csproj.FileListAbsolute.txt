@@ -1,1 +1,13 @@
 Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\MessageRelaySystem.exe.config
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\MessageRelaySystem.exe
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\bin\Debug\MessageRelaySystem.pdb
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.csprojResolveAssemblyReference.cache
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MainWindow.baml
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MainWindow.g.cs
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\App.g.cs
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem_MarkupCompile.cache
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.g.resources
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.Properties.Resources.resources
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.csproj.GenerateResource.Cache
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.exe
+Z:\p2crypt_network\NetworkInterface\MessageRelaySystem\obj\Debug\MessageRelaySystem.pdb
