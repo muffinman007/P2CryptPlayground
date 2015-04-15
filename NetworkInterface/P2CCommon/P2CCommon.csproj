@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPackage.cs" />
-    <Compile Include="IPendingPackageState.cs" />
     <Compile Include="IPublicProfile.cs" />
     <Compile Include="IUserAccount.cs" />
     <Compile Include="IUserInteractor.cs" />

@@ -157,7 +157,7 @@ namespace Network
 		/// Send the package to all connected node. On fail do nothing.
 		/// </summary>
 		/// <param name="PendingPackageState">The package user is sending out</param>
-		public async void Send<T>(PendingPackageState<T> pendingPackage)
+		public async void Send(PackageStatus status, string strData)
 		{
 			// There's a better way to do this so we can catch all the socketException and handle it correctly.
 			// When we catch an exception most likely user had disconnected and we need to update that change
@@ -165,30 +165,33 @@ namespace Network
 			Socket client = null;	
 			byte[] outgoingData = null;
 
-			try{
-				using(MemoryStream ms = new MemoryStream()){            // might need to handle memory error in the future
-					BinaryFormatter bf = new BinaryFormatter();
-						
-					foreach(var outgoingSocket in clientSocketDict){
+			try{									
+				foreach(var outgoingSocket in clientSocketDict){
+					using(MemoryStream ms = new MemoryStream()){            // might need to handle memory error in the future
+						BinaryFormatter bf = new BinaryFormatter();
 						client = outgoingSocket.Value;
 
-						Package deliveryPackage;
+						Package deliveryPackage = null;
 
-						if(pendingPackage.PackageStatus == PackageStatus.Message){
+						if(status == PackageStatus.Message){
 							IPublicProfile outgoingProfile;
 							buddyConcurrentDict.TryGetValue(outgoingSocket.Key, out outgoingProfile);
+
 							deliveryPackage = new Package(
-								null, 
-								userNick,
-								PackageStatus.Message,
-								outgoingProfile.Encrypt(Encoding.UTF8.GetBytes((string)pendingPackage.Data))
-							);
+									null, 
+									userNick,
+									PackageStatus.Message,
+									outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData))
+								);
 						}
 						else{
 
 						}
 
-						outgoingSocket.Value.Send(data, 0, data.Length, SocketFlags.None);
+						bf.Serialize(ms, deliveryPackage);
+						ms.Seek(0, SeekOrigin.Begin);
+						outgoingData = ms.ToArray();
+						outgoingSocket.Value.Send(outgoingData, 0, outgoingData.Length, SocketFlags.None);
 					}
 				}
 			}
@@ -206,8 +209,7 @@ namespace Network
 					MessageBox.Show("Error while sending data" + Environment.NewLine +
 									ex.Message + Environment.NewLine);
 				});
-			}
-			
+			}			
 		}
 
 

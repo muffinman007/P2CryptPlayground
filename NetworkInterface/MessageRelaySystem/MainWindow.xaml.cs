@@ -97,7 +97,7 @@ namespace MessageRelaySystem {
 			String message = txtMessage.Text;
 
 			await Task.Factory.StartNew(()=>{ 
-				networkServer.Send<string>(new PendingPackageState<string>(message, PackageStatus.Message)); 
+				networkServer.Send(PackageStatus.Message, message); 
 			}).ConfigureAwait(false);
 
 			txtChatWindow.InvokeIfRequired(()=>{
