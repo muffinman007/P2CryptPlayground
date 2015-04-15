@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using Network;
 using P2CCore;
 using P2CCommon;
+using System.IO;
 
 namespace MessageRelaySystem {
 	/// <summary>
@@ -101,7 +102,7 @@ namespace MessageRelaySystem {
 			}).ConfigureAwait(false);
 
 			txtChatWindow.InvokeIfRequired(()=>{
-				txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
+				txtChatWindow.AppendText(userAccount.UserNick + ":  " + Environment.NewLine + txtMessage.Text + Environment.NewLine);
 				txtMessage.Clear();
 				txtMessage.Focus();
 				txtStatus.Text = ++messageSentCounter + " Message(s) sent";
@@ -110,9 +111,56 @@ namespace MessageRelaySystem {
 
 
 		async void PackageHandler(Package package, EventArgs e){
+			string str = string.Empty;
+			if(package.PackageStatus == PackageStatus.LogOff || package.PackageStatus == PackageStatus.NickUpdate)
+				str = txtFriendsList.Text;
+
+			// some user may have thousands of nick on their list so it may be better to do the split on a different thread
 			Task.Factory.StartNew(()=>{
+				string[] nickArray = null;
+				if(!string.IsNullOrEmpty(str))
+					nickArray = str.Split(new string[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
+				
+				switch(package.PackageStatus){
+					case PackageStatus.SignIn:
+						txtChatWindow.InvokeIfRequired(()=>{
+							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " joined." + Environment.NewLine);
+							txtFriendsList.AppendText(package.UserNick + Environment.NewLine);
+						});
+						break;
 
+					case PackageStatus.LogOff:
+						IEnumerable<string> listOfNicks = from nick in nickArray
+														  where !String.Equals(nick, package.UserNick)
+														  select nick;
+						txtChatWindow.InvokeIfRequired(()=>{
+							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " logged out." + Environment.NewLine);
+							foreach(var nick in listOfNicks)
+								txtFriendsList.AppendText(nick + Environment.NewLine);
+						});
+						break;
 
+					case PackageStatus.NickUpdate:
+						for(int i = 0; i < nickArray.Length; ++i){
+							if(string.Equals(nickArray[i], package.UserNick)){
+								nickArray[i] = package.PublicProfile.UserNick;
+								break;
+							}
+						}
+						txtChatWindow.InvokeIfRequired(()=>{
+							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " changed to " + package.PublicProfile.UserNick + Environment.NewLine);
+							foreach(var nick in nickArray)
+								txtFriendsList.AppendText(nick + Environment.NewLine);
+						});
+						break;
+
+					case PackageStatus.Message:
+						string message = Encoding.UTF8.GetString(userAccount.Decrypt(package.Data));
+						txtChatWindow.InvokeIfRequired(()=>{
+							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + ":  " + message);
+						});
+						break;
+				}				
 			});
 		}
 

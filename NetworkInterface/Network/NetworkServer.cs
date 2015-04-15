@@ -264,9 +264,10 @@ namespace Network
 				case PackageStatus.Message:
 					arrivedPackage = deliveryPackage;
 					hasPackage = true;
-					P2CDS(arrivedPackage, null);					// let subscriber know they have a package
 					break;
-			}	
+			}
+	
+			P2CDS(arrivedPackage, null);					// let subscriber know they have a package
 		}
 
 
