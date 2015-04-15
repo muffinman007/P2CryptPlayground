@@ -19,6 +19,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 using P2CCore;
 using System.IO;
+using P2CCommon;
 
 namespace Network 
 {
@@ -38,7 +39,7 @@ namespace Network
 		Task serverTask;
 		Task[] sendTask;
 
-		Package package;
+		Package arrivedPackage;
 
 		#endregion Fields
 
@@ -80,7 +81,7 @@ namespace Network
 			get
 			{
 				if(hasPackage)
-					return package;
+					return arrivedPackage;
 				else{
 					return null;						// should we return an empty package?
 				}
@@ -206,7 +207,21 @@ namespace Network
 				deliveryPackage = (Package)bf.Deserialize(ms);
 			}
 
+			switch(deliveryPackage.PackageStatus){
+				case PackageStatus.SignIn:
+					break;
 
+				case PackageStatus.LogOff:
+					break;
+
+				case PackageStatus.NickUpdate:
+					break;
+
+				case PackageStatus.Message:
+					arrivedPackage = deliveryPackage;
+					hasPackage = true;
+					break;
+			}
 
 			clientSocketDict.AddOrUpdate(deliveryPackage.PublicProfile.UserNick, client, null);
 		}
