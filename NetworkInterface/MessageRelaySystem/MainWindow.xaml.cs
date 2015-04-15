@@ -98,11 +98,12 @@ namespace MessageRelaySystem {
 
 			await Task.Factory.StartNew(()=>{ networkServer.Send(message); }).ConfigureAwait(false);
 
-			txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
-			txtMessage.Clear();
-			txtMessage.Focus();
-
-			txtStatus.Text = ++messageSentCounter + " Message(s) sent";
+			txtChatWindow.InvokeIfRequired(()=>{
+				txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
+				txtMessage.Clear();
+				txtMessage.Focus();
+				txtStatus.Text = ++messageSentCounter + " Message(s) sent";
+			});					
 		}
 
 

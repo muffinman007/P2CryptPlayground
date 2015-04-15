@@ -152,7 +152,7 @@ namespace Network
 		/// Send the package to all connected node. On fail do nothing.
 		/// </summary>
 		/// <param name="deliveryPackage">The current data user want to send out</param>
-		public async void Send(Package deliveryPackage)
+		public async void Send(string message)
 		{
 			
 			byte[] data = null;
