@@ -27,6 +27,10 @@ namespace Network
 	{
 
 		#region Fields
+		// this is how the app will know if there's incoming package waiting to be deliver. 
+		public delegate void P2CDeliveryService(Package package, EventArgs e);
+		public event P2CDeliveryService P2CDS;
+
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
 		
@@ -74,7 +78,7 @@ namespace Network
 
 
 		/// <summary>
-		/// Allow user to get the most recent arrived package.
+		/// Allow user to get the most recent arrived package. Could removed this in the future?
 		/// </summary>
 		public Package Package
 		{
@@ -220,6 +224,7 @@ namespace Network
 				case PackageStatus.Message:
 					arrivedPackage = deliveryPackage;
 					hasPackage = true;
+					P2CDS(arrivedPackage, null);					// let subscribers know they have a package
 					break;
 			}
 

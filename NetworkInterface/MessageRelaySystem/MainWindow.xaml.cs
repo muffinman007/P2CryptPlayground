@@ -51,6 +51,8 @@ namespace MessageRelaySystem {
 			networkServer = new NetworkServer();
 			networkServer.Start();
 			
+			networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
+
 			userAccount = new UserAccount(){UserNick = txtNick.Text};
 
 			btnStart.IsEnabled = false;
@@ -94,16 +96,7 @@ namespace MessageRelaySystem {
 
 			String message = txtMessage.Text;
 
-			Package deliveryPackage = new Package(
-				userAccount.PublicProfile, 
-				PackageStatus.Message,
-				await Task.Factory.StartNew<Byte[]>(()=>
-					{
-						return userAccount.PublicProfile.Encrypt(Encoding.UTF8.GetBytes(message));
-					})
-				);
-			
-			networkServer.Send(deliveryPackage);
+			await Task.Factory.StartNew(()=>{ networkServer.Send(message); }).ConfigureAwait(false);
 
 			txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
 			txtMessage.Clear();
@@ -113,5 +106,28 @@ namespace MessageRelaySystem {
 		}
 
 
+		async void PackageHandler(Package package, EventArgs e){
+			Task.Factory.StartNew(()=>{
+
+
+			});
+		}
+
+
 	}
+
+
+	// allow updating in UI Thread from different thread
+	static class ControlExtension{
+		public static void InvokeIfRequired(this Control control, Action action){
+			if(control.Dispatcher.CheckAccess()){
+				action();
+			}
+			else{
+				control.Dispatcher.Invoke(action);
+			}
+		}
+	}
+
+
 }
