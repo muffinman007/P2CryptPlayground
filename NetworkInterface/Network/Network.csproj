@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="NetworkServer.cs" />
     <Compile Include="Package.cs" />
+    <Compile Include="PendingPackageState.cs" />
     <Compile Include="SocketServer.cs" />
   </ItemGroup>
   <ItemGroup>

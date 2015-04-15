@@ -151,8 +151,8 @@ namespace Network
 		/// <summary>
 		/// Send the package to all connected node. On fail do nothing.
 		/// </summary>
-		/// <param name="deliveryPackage">The current data user want to send out</param>
-		public async void Send(string message)
+		/// <param name="PendingPackageState">The package user is sending out</param>
+		public async void Send<T>(PendingPackageState<T> pendingPackage)
 		{
 			
 			byte[] data = null;
