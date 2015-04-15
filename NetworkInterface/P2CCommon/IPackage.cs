@@ -12,5 +12,15 @@ namespace P2CCommon
  
 		byte[] Data{ get; }
 
+		PackageStatus PackageStatus{ get; }
+	}
+
+
+	public enum PackageStatus
+	{
+		SignIn,
+		LogOff,
+		NickUpdate,
+		Message
 	}
 }

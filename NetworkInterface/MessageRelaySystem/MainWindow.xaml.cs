@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 
 using Network;
 using P2CCore;
+using P2CCommon;
 
 namespace MessageRelaySystem {
 	/// <summary>
@@ -95,6 +96,7 @@ namespace MessageRelaySystem {
 
 			Package deliveryPackage = new Package(
 				userAccount.PublicProfile, 
+				PackageStatus.Message,
 				await Task.Factory.StartNew<Byte[]>(()=>
 					{
 						return userAccount.PublicProfile.Encrypt(Encoding.UTF8.GetBytes(message));

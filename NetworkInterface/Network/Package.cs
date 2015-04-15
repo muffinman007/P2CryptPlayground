@@ -19,6 +19,7 @@ namespace Network
 
 		IPublicProfile publicProfile;
 		byte[] data;
+		PackageStatus status;
 
 		#endregion Fields
 
@@ -35,13 +36,19 @@ namespace Network
 			get { return data; }
 		}
 
+		public PackageStatus PackageStatus
+		{
+			get{ return status; }
+		}
+		
         #endregion Properties
 
         #region Constructors
 
-        public Package(IPublicProfile userProfile, byte[] data)
+        public Package(IPublicProfile userProfile, PackageStatus status, byte[] data)
         {
             this.publicProfile = userProfile;
+			this.status = status;
             this.data = data;
         }
 

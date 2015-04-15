@@ -23,11 +23,8 @@ namespace Network
 		#region Fields
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
-		//bool hasServerStart;
+		
 
-		// Socket data
-		//int port;
-		//int backlog;
 
 		Socket server;
 
