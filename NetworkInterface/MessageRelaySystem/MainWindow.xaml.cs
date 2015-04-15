@@ -31,6 +31,18 @@ namespace MessageRelaySystem {
 
 		public MainWindow() {
 			InitializeComponent();
+
+			for(int i = 0; i < 256; ++i){
+				cbFirstIP.Items.Add(i);
+				cbSecondIP.Items.Add(i);
+				cbThirdIP.Items.Add(i);
+				cbFourthIP.Items.Add(i);
+			}
+
+			cbFirstIP.SelectedIndex		= 0;
+			cbSecondIP.SelectedIndex	= 0;
+			cbThirdIP.SelectedIndex		= 0;
+			cbFourthIP.SelectedIndex	= 0;
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
