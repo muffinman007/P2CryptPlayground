@@ -179,19 +179,19 @@ namespace Network
 							buddyConcurrentDict.TryGetValue(outgoingSocket.Key, out outgoingProfile);
 
 							deliveryPackage = new Package(
-									null, 
-									userPublicProfile.UserNick,
-									PackageStatus.Message,
-									outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData))
-								);
+								null, 
+								userPublicProfile.UserNick,
+								PackageStatus.Message,
+								outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData))
+							);
 						}
 						else if(status == PackageStatus.NickUpdate){
 							deliveryPackage = new Package(
-									userPublicProfile,
-									strData,
-									PackageStatus.NickUpdate,
-									null
-								);
+								userPublicProfile,
+								strData,
+								PackageStatus.NickUpdate,
+								null
+							);
 						}
 						else{
 							deliveryPackage = new Package(null, userPublicProfile.UserNick, status, null);
