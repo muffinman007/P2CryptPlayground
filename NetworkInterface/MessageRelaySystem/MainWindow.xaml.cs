@@ -48,12 +48,12 @@ namespace MessageRelaySystem {
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
-			networkServer = new NetworkServer(txtNick.Text);
+			userAccount = new UserAccount(){UserNick = txtNick.Text};
+			
+			networkServer = new NetworkServer(userAccount.PublicProfile);
 			networkServer.Start();
 			
 			networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
-
-			userAccount = new UserAccount(){UserNick = txtNick.Text};
 
 			btnStart.IsEnabled = false;
 

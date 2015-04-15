@@ -46,16 +46,16 @@ namespace Network
 
 		Package arrivedPackage;
 
-		string userNick;
+		IPublicProfile userPublicProfile;
 
 		#endregion Fields
 
 
 		#region Constructors
 
-		public NetworkServer(string userNick, int port = 12345, int backlog = 100)
+		public NetworkServer(IPublicProfile userPublicProfile, int port = 12345, int backlog = 100)
 		{	
-			this.userNick = userNick;
+			this.userPublicProfile = userPublicProfile;
 
 			hasPackage = false;
 		
@@ -154,9 +154,10 @@ namespace Network
 		}
 
 		/// <summary>
-		/// Send the package to all connected node. On fail do nothing.
+		/// Send the package to all connected node. 
 		/// </summary>
-		/// <param name="PendingPackageState">The package user is sending out</param>
+		/// <param name="status">Allow the program to know the content of the package</param>
+		/// <param name="strData">Either it's the message to be sent out or user's old profile nick</param>
 		public async void Send(PackageStatus status, string strData)
 		{
 			// There's a better way to do this so we can catch all the socketException and handle it correctly.
@@ -179,13 +180,21 @@ namespace Network
 
 							deliveryPackage = new Package(
 									null, 
-									userNick,
+									userPublicProfile.UserNick,
 									PackageStatus.Message,
 									outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData))
 								);
 						}
+						else if(status == PackageStatus.NickUpdate){
+							deliveryPackage = new Package(
+									userPublicProfile,
+									strData,
+									PackageStatus.NickUpdate,
+									null
+								);
+						}
 						else{
-
+							deliveryPackage = new Package(null, userPublicProfile.UserNick, status, null);
 						}
 
 						bf.Serialize(ms, deliveryPackage);
