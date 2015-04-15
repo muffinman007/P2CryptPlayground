@@ -13,6 +13,9 @@ namespace P2CCommon
 		byte[] Data{ get; }
 
 		PackageStatus PackageStatus{ get; }
+
+		String UserNick{ get; }
+
 	}
 
 
