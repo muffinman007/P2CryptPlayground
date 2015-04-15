@@ -37,6 +37,9 @@ namespace MessageRelaySystem {
 
 			txtStatus.Text = "Server running";
 			btnStart.IsEnabled = false;
+
+			btnStop.IsEnabled = true;
+			btnRemoteConnect.IsEnabled = true;
 		}
 
 
