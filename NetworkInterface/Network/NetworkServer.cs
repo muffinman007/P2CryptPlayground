@@ -107,6 +107,8 @@ namespace Network
 				try{
 					while(!cancelToken.IsCancellationRequested){
 						Socket client = server.Accept();
+
+						Task.Factory.StartNew(()=>{ ProcessIncomingData(client); });
 					}
 				}
 				catch(SocketException ex){
@@ -184,6 +186,29 @@ namespace Network
 					});
 				}
 			});
+		}
+
+
+		void ProcessIncomingData(Socket client){
+			Package deliveryPackage;
+
+			int buffer = 1024;
+			int bytesRead = 0;
+			byte[] data = new byte[buffer];
+
+			using(MemoryStream ms = new MemoryStream()){
+				while( (bytesRead = client.Receive(data, 0, buffer, SocketFlags.None)) > 0)
+					ms.Write(data, 0, bytesRead);
+
+				ms.Seek(0, SeekOrigin.Begin);
+
+				BinaryFormatter bf = new BinaryFormatter();
+				deliveryPackage = (Package)bf.Deserialize(ms);
+			}
+
+
+
+			clientSocketDict.AddOrUpdate(deliveryPackage.PublicProfile.UserNick, client, null);
 		}
 
 
