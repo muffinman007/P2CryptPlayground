@@ -34,12 +34,13 @@ namespace MessageRelaySystem {
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
 			networkServer = new NetworkServer();
 			networkServer.Start();
-
-			txtStatus.Text = "Server running";
+			
 			btnStart.IsEnabled = false;
 
 			btnStop.IsEnabled = true;
 			btnRemoteConnect.IsEnabled = true;
+
+			txtStatus.Text = "Server running";
 		}
 
 		private void btnStop_Click(object sender, RoutedEventArgs e) {
@@ -49,6 +50,8 @@ namespace MessageRelaySystem {
 
 			btnStop.IsEnabled = false;
 			btnRemoteConnect.IsEnabled = false;
+
+			txtStatus.Text = "Server stopped";
 		}
 
 
