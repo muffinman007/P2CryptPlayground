@@ -1,1 +1,2 @@
 Z:\p2crypt_network\NetworkInterface\Network\bin\Debug\Network.exe.config
+Z:\p2crypt_network\NetworkInterface\Network\obj\Debug\Network.csprojResolveAssemblyReference.cache

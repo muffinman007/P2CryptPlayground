@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Net;
 
 namespace Network {
-	protected internal class SocketServer {
+	class SocketServer{
 
 		#region Fields
 
