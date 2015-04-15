@@ -128,7 +128,7 @@ namespace Network
 			if(serverTask == null)
 				return;
 
-			server.Shutdown(SocketShutdown.Both);
+			//server.Shutdown(SocketShutdown.Both);
 			server.Close();
 			//server = null;
 
