@@ -241,12 +241,24 @@ namespace Network
 
 			switch(deliveryPackage.PackageStatus){
 				case PackageStatus.SignIn:
+					clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
+					buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
 					break;
 
 				case PackageStatus.LogOff:
+					Socket dummySock;
+					IPublicProfile dummyProfile;
+					clientSocketDict.TryRemove(deliveryPackage.UserNick, out dummySock);
+					buddyConcurrentDict.TryRemove(deliveryPackage.UserNick, out dummyProfile);
 					break;
 
 				case PackageStatus.NickUpdate:
+					Socket dummy;
+					IPublicProfile dummyPP;
+					clientSocketDict.TryRemove(deliveryPackage.UserNick, out dummy);
+					clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
+					buddyConcurrentDict.TryRemove(deliveryPackage.UserNick, out dummyPP);
+					buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
 					break;
 
 				case PackageStatus.Message:
@@ -254,10 +266,7 @@ namespace Network
 					hasPackage = true;
 					P2CDS(arrivedPackage, null);					// let subscriber know they have a package
 					break;
-			}
-
-			clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
-			buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
+			}	
 		}
 
 
