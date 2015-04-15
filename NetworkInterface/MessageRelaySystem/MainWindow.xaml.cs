@@ -42,6 +42,10 @@ namespace MessageRelaySystem {
 			btnRemoteConnect.IsEnabled = true;
 		}
 
+		private void btnStop_Click(object sender, RoutedEventArgs e) {
+
+		}
+
 
 	}
 }

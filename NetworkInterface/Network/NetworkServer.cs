@@ -123,6 +123,7 @@ namespace Network
 
 			server.Shutdown(SocketShutdown.Both);
 			server.Close();
+			server = null;
 
 			tokenSource.Cancel();
 

@@ -199,6 +199,12 @@ namespace MessageRelaySystem {
             return;
             case 7:
             this.btnStop = ((System.Windows.Controls.Button)(target));
+            
+            #line 17 "..\..\MainWindow.xaml"
+            this.btnStop.Click += new System.Windows.RoutedEventHandler(this.btnStop_Click);
+            
+            #line default
+            #line hidden
             return;
             case 8:
             this.btnRemoteConnect = ((System.Windows.Controls.Button)(target));
