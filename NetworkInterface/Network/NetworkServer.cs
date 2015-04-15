@@ -59,7 +59,7 @@ namespace Network
 			server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			server.Bind(new IPEndPoint(localIP, port));
 			server.LingerState = new LingerOption(false, 0);
-			server.Listen(backlog);
+			server.Listen(backlog);			
 		}
 
 		#endregion Constructors
@@ -105,12 +105,12 @@ namespace Network
 						Socket client = server.Accept();
 					}
 				}
-				catch(Exception ex){
+				catch(SocketException ex){
 					Task.Factory.StartNew(()=>{ 
 						MessageBox.Show("Inside Server Task: " + Environment.NewLine +
-										"Exception: " + Environment.NewLine +
-										ex.Message + Environment.NewLine +
+										"Exception: " + ex.Message + Environment.NewLine +
 										"Stack Track: " + ex.StackTrace + Environment.NewLine +
+										"Exception type: " + ex.GetType().ToString() + Environment.NewLine +
 										"Inner Exception: " + ex.InnerException);
 					});
 				}
