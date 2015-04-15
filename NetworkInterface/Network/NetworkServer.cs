@@ -98,7 +98,15 @@ namespace Network
 						Socket client = server.Accept();
 					}
 				}
-				catch(Exception){}
+				catch(Exception ex){
+					Task.Factory.StartNew(()=>{ 
+						MessageBox.Show("Inside Server Task: " + Environment.NewLine +
+										"Exception: " + Environment.NewLine +
+										ex.Message + Environment.NewLine +
+										"Stack Track: " + ex.StackTrace + Environment.NewLine +
+										"Inner Exception: " + ex.InnerException);
+					});
+				}
 
 				Task.Factory.StartNew(()=>{ MessageBox.Show("Debug inside serverTask. exiting."); });
 			});

@@ -13,17 +13,32 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Network;
+
 namespace MessageRelaySystem {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow:Window {
+
+		#region Fields
+
+		NetworkServer networkServer; 
+
+		#endregion Fields
+
 		public MainWindow() {
 			InitializeComponent();
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
+			networkServer = new NetworkServer();
+			networkServer.Start();
 
+			txtStatus.Text = "Server running";
+			btnStart.IsEnabled = false;
 		}
+
+
 	}
 }
