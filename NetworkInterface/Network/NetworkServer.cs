@@ -45,16 +45,20 @@ namespace Network
 
 		Package arrivedPackage;
 
+		string userNick;
+
 		#endregion Fields
 
 
 		#region Constructors
 
-		public NetworkServer(int port = 12345, int backlog = 100)
-		{			
+		public NetworkServer(string userNick, int port = 12345, int backlog = 100)
+		{	
+			this.userNick = userNick;
+
 			hasPackage = false;
 		
-			buddyConcurrentDict = new ConcurrentDictionary<string,PublicProfile>();
+			buddyConcurrentDict = new ConcurrentDictionary<string,IPublicProfile>();
 			clientSocketDict	= new ConcurrentDictionary<string,Socket>();
 
 			IPAddress localIP = null;

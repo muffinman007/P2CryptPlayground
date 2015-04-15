@@ -48,7 +48,7 @@ namespace MessageRelaySystem {
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
-			networkServer = new NetworkServer();
+			networkServer = new NetworkServer(txtNick.Text);
 			networkServer.Start();
 			
 			networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
