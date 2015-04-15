@@ -48,9 +48,16 @@ namespace Network
 			hasPackage = false;
 			//hasServerStart = false;
 
-			IPEndPoint endPoint = new IPEndPoint(Dns.GetHostAddresses(Dns.GetHostName())[0].MapToIPv4(), port);
+			IPAddress localIP = null;
+			foreach(var ip in Dns.GetHostAddresses(Dns.GetHostName())){
+				if(ip.AddressFamily == AddressFamily.InterNetwork){
+					localIP = ip;
+					break;
+				}
+			}
+
 			server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			server.Bind(endPoint);
+			server.Bind(new IPEndPoint(localIP, port));
 			server.LingerState = new LingerOption(false, 0);
 			server.Listen(backlog);
 		}
