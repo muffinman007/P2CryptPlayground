@@ -186,8 +186,14 @@ namespace Network
 						foreach(var outgoing in clientSocketDict){
 							client = outgoing.Value;
 
-							Package deliveryPackage = new Package(
+							need to create the package for delivery
 
+							if(pendingPackage.PackageStatus == PackageStatus.Message){
+
+							}
+							else{
+
+							}
 
 							outgoing.Value.Send(data, 0, data.Length, SocketFlags.None);
 						}
