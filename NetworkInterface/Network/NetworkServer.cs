@@ -143,7 +143,7 @@ namespace Network
 		/// <param name="deliveryPackage">The current data user want to send out</param>
 		public void Send(Package deliveryPackage)
 		{
-
+			Task.Factory.StartNew(()=>{ MessageBox.Show("Package delivered"); }); 
 		}
 
 

@@ -90,18 +90,22 @@ namespace MessageRelaySystem {
 		private async void btnSend_Click(object sender, RoutedEventArgs e) {
 			if(String.IsNullOrWhiteSpace(txtMessage.Text) || String.IsNullOrEmpty(txtMessage.Text))
 				return;
-			
+
+			String message = txtMessage.Text;
+
 			Package deliveryPackage = new Package(
 				userAccount.PublicProfile, 
 				await Task.Factory.StartNew<Byte[]>(()=>
 					{
-						return userAccount.PublicProfile.Encrypt(Encoding.UTF8.GetBytes(txtMessage.Text));
+						return userAccount.PublicProfile.Encrypt(Encoding.UTF8.GetBytes(message));
 					})
 				);
 			
 			networkServer.Send(deliveryPackage);
 
 			txtChatWindow.AppendText(userAccount.UserNick + ":" + Environment.NewLine + txtMessage.Text);
+			txtMessage.Clear();
+			txtMessage.Focus();
 		}
 
 
