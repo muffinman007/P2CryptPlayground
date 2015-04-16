@@ -57,7 +57,11 @@ namespace MessageRelaySystem {
 				userAccount = new UserAccount(){UserNick = txtNick.Text};
 			
 			if(networkServer == null){
-				networkServer = new NetworkServer(userAccount.PublicProfile);
+				if(String.IsNullOrEmpty(txtCustomPort.Text))
+					networkServer = new NetworkServer(userAccount.PublicProfile);
+				else
+					networkServer = new NetworkServer(userAccount.PublicProfile, int.Parse(txtCustomPort.Text));
+
 				networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
 			}
 
