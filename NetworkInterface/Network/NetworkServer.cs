@@ -4,7 +4,8 @@
  * 
  * Controls outgoing/incoming data for the program.
  * 
- * Major upgrade need: send and received info for which port to use when sending data.
+ * TO DO: 
+ *		- on send error to a specific ip , remove the owner of the specific ip and the ip 
  * 
  **/
 
@@ -228,8 +229,14 @@ namespace Network
 			}
 			catch(SocketException se){
 				Task.Factory.StartNew(()=>{
+					string str;
+					if(remoteSocket == null)
+						str = "IP not available";
+					else
+						str = remoteSocket.RemoteEndPoint.ToString();
+
 					MessageBox.Show("Error while sending data" + Environment.NewLine +
-									"Remote ip: " + remoteSocket.RemoteEndPoint.ToString() + Environment.NewLine +
+									"Remote ip: " + str + Environment.NewLine +
 									"Socket Exception: " + Environment.NewLine +
 									se.Message + Environment.NewLine +
 									"Error Code: " + se.NativeErrorCode + Environment.NewLine);
@@ -300,8 +307,14 @@ namespace Network
 			}
 			catch(SocketException se){
 				Task.Factory.StartNew(()=>{
+					string str;
+					if(remoteSocket == null)
+						str = "IP not available";
+					else
+						str = remoteSocket.RemoteEndPoint.ToString();
+
 					MessageBox.Show("Error while sending data" + Environment.NewLine +
-									"Remote ip: " + remoteSocket.RemoteEndPoint.ToString() + Environment.NewLine +
+									"Remote ip: " + str + Environment.NewLine +
 									"Socket Exception: " + Environment.NewLine +
 									se.Message + Environment.NewLine +
 									"Error Code: " + se.NativeErrorCode + Environment.NewLine);
@@ -358,7 +371,7 @@ namespace Network
 						
 						Socket replySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 						replySocket.Connect(remoteAdd);
-						replySocket.Send(raw, 0, raw.Length, SocketFlags.None);
+						int byteSent = replySocket.Send(raw, 0, raw.Length, SocketFlags.None);
 						replySocket.Close();
 						replySocket = null;
 					}
@@ -381,7 +394,7 @@ namespace Network
 					break;			
 			}
 	
-			P2CDS(arrivedPackage, null);					// let subscriber know they have a package
+			P2CDS(deliveryPackage, null);					// let subscriber know they have a package
 		}	
 
 
