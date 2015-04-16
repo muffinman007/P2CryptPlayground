@@ -83,14 +83,14 @@ namespace MessageRelaySystem {
 			txtStatus.Text = "Server running";
 		}
 
-		private void btnStop_Click(object sender, RoutedEventArgs e) {
+		private async void btnStop_Click(object sender, RoutedEventArgs e) {
 			networkServer.Disconnect();
 			hasServerStarted = false;
 
-			// notified everyone user logoff
-			Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.LogOff, string.Empty); });
-
 			if(!isWindowClosing){
+				// notified everyone user logoff
+				Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.LogOff, string.Empty); });
+
 				btnStart.IsEnabled = true;
 
 				btnStop.IsEnabled = false;
@@ -100,6 +100,15 @@ namespace MessageRelaySystem {
 
 				txtStatus.Text = "Server stopped";
 			}
+			else{
+				// give time to send out notification
+				await LogoffNotificationAsync();
+			}
+		}
+
+		async Task LogoffNotificationAsync(){
+			await Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.LogOff, string.Empty); });
+			return;
 		}
 
 
