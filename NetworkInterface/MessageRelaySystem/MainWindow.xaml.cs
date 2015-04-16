@@ -80,6 +80,7 @@ namespace MessageRelaySystem {
 			if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
 				btnRemoteConnect.IsEnabled = false;
 				btnSend.IsEnabled = false;
+				btnChangeNick.IsEnabled = false;
 
 				if(userAccount == null)
 					btnStart.IsEnabled = false;
@@ -88,6 +89,7 @@ namespace MessageRelaySystem {
 				btnRemoteConnect.IsEnabled = true;
 				btnSend.IsEnabled = true;
 				btnStart.IsEnabled = true;
+				btnChangeNick.IsEnabled = true;
 			}
 		}
 
@@ -122,33 +124,35 @@ namespace MessageRelaySystem {
 					nickArray = str.Split(new string[]{Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
 				
 				switch(package.PackageStatus){
-					case PackageStatus.SignIn:
+					case PackageStatus.Connect:
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " joined." + Environment.NewLine);
-							txtFriendsList.AppendText(package.UserNick + Environment.NewLine);
+							txtChatWindow.AppendText(Environment.NewLine + package.PublicProfile.UserNick + " joined." + Environment.NewLine);
+							txtFriendsList.AppendText(package.PublicProfile.UserNick + Environment.NewLine);
 						});
 						break;
 
 					case PackageStatus.LogOff:
 						IEnumerable<string> listOfNicks = from nick in nickArray
-														  where !String.Equals(nick, package.UserNick)
+														  where !String.Equals(nick, package.Information.Item2)
 														  select nick;
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " logged out." + Environment.NewLine);
+							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + " logged out." + Environment.NewLine);
 							foreach(var nick in listOfNicks)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
 						break;
 
 					case PackageStatus.NickUpdate:
+						string oldNick = string.Empty;
 						for(int i = 0; i < nickArray.Length; ++i){
-							if(string.Equals(nickArray[i], package.UserNick)){
-								nickArray[i] = package.PublicProfile.UserNick;
+							if(string.Equals(nickArray[i], package.Information.Item2)){
+								oldNick = nickArray[i];
+								nickArray[i] = package.Information.Item2;
 								break;
 							}
 						}
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + " changed to " + package.PublicProfile.UserNick + Environment.NewLine);
+							txtChatWindow.AppendText(Environment.NewLine + oldNick + " changed to " + package.Information.Item2 + Environment.NewLine);
 							foreach(var nick in nickArray)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
@@ -157,13 +161,20 @@ namespace MessageRelaySystem {
 					case PackageStatus.Message:
 						string message = Encoding.UTF8.GetString(userAccount.Decrypt(package.Data));
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.UserNick + ":  " + message);
+							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + ":  " + message);
 						});
 						break;
 				}				
 			});
 		}
 
+		private void btnRemoteConnect_Click(object sender, RoutedEventArgs e) {
+			string ip = cbFirstIP.Text + "." + cbSecondIP.Text + "." + cbThirdIP.Text + "." + cbFourthIP.Text;
+			
+			Task.Factory.StartNew(()=>{
+				networkServer.ConnectToRemote(ip);
+			});
+		}
 
 	}
 

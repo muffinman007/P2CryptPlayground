@@ -13,7 +13,7 @@ namespace P2CCore
 		#region Properties
 
 		[XmlArray]
-		public List<PublicProfile> Profiles { get; set; }
+		public List<PublicProfile> Profiles { get; set; }		
 
 		#endregion Properties
 	}

@@ -14,16 +14,19 @@ namespace P2CCommon
 
 		PackageStatus PackageStatus{ get; }
 
-		String UserNick{ get; }
+		Tuple<Guid, string> Information{ get; }
+
+		int Port{ get; }
 
 	}
 
 
 	public enum PackageStatus
 	{
-		SignIn,
+		Connect,
 		LogOff,
 		NickUpdate,
 		Message
 	}
+
 }

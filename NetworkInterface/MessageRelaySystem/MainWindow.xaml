@@ -15,7 +15,7 @@
 		<ComboBox x:Name="cbFourthIP" HorizontalAlignment="Left" Margin="394,41,0,0" VerticalAlignment="Top" Width="44"/>
 		<Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="75" Click="btnStart_Click" IsDefault="True" IsEnabled="False"/>
 		<Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="90,41,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="btnStop_Click"/>
-		<Button x:Name="btnRemoteConnect" Content="Connect " HorizontalAlignment="Left" Margin="446,41,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False"/>
+		<Button x:Name="btnRemoteConnect" Content="Connect " HorizontalAlignment="Left" Margin="446,41,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="btnRemoteConnect_Click"/>
 		<TextBox x:Name="txtChatWindow" HorizontalAlignment="Left" Height="309" Margin="10,68,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="516" VerticalScrollBarVisibility="Auto" IsReadOnly="True" IsReadOnlyCaretVisible="True">
 			<TextBox.BorderBrush>
 				<LinearGradientBrush EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">

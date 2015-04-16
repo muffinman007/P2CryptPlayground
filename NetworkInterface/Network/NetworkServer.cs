@@ -4,6 +4,8 @@
  * 
  * Controls outgoing/incoming data for the program.
  * 
+ * Major upgrade need: send and received info for which port to use when sending data.
+ * 
  **/
 
 #endregion Header
@@ -35,9 +37,9 @@ namespace Network
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
 		
-		ConcurrentDictionary<string, IPublicProfile> buddyConcurrentDict;
-		ConcurrentDictionary<string, Socket>		clientSocketDict;
-
+		ConcurrentDictionary<Guid, IPublicProfile>		friendsProfileDict;
+		ConcurrentDictionary<Guid, IPEndPoint>			friendsIPaddressDict;
+				
 		Socket server;
 
 		CancellationTokenSource tokenSource;
@@ -47,6 +49,8 @@ namespace Network
 		Package arrivedPackage;
 
 		IPublicProfile userPublicProfile;
+
+		int defaultPort;
 
 		#endregion Fields
 
@@ -59,8 +63,10 @@ namespace Network
 
 			hasPackage = false;
 		
-			buddyConcurrentDict = new ConcurrentDictionary<string,IPublicProfile>();
-			clientSocketDict	= new ConcurrentDictionary<string,Socket>();
+			friendsProfileDict		= new ConcurrentDictionary<Guid,IPublicProfile>();
+			friendsIPaddressDict	= new ConcurrentDictionary<Guid,IPEndPoint>();
+
+			defaultPort = port;
 
 			IPAddress localIP = null;
 			foreach(var ip in Dns.GetHostAddresses(Dns.GetHostName())){
@@ -160,69 +166,147 @@ namespace Network
 		/// <param name="strData">Either it's the message to be sent out or user's old profile nick</param>
 		public async void Send(PackageStatus status, string strData)
 		{
-			// There's a better way to do this so we can catch all the socketException and handle it correctly.
+			if(status == PackageStatus.Message)
+				SendMessage(strData);
+			else
+				SendOther(status);
+		}
+
+		async void SendMessage(string strData){
+			 // There's a better way to do this so we can catch all the socketException and handle it correctly.
 			// When we catch an exception most likely user had disconnected and we need to update that change
 			// with the program.			
-			Socket client = null;	
+			IPEndPoint friendIP;
+			Socket remoteSocket = null;
 			byte[] outgoingData = null;
 
 			try{									
-				foreach(var outgoingSocket in clientSocketDict){
+				foreach(var friendInfo in friendsIPaddressDict){
 					using(MemoryStream ms = new MemoryStream()){            // might need to handle memory error in the future
 						BinaryFormatter bf = new BinaryFormatter();
-						client = outgoingSocket.Value;
+						friendIP = friendInfo.Value;
 
-						Package deliveryPackage = null;
+						IPublicProfile outgoingProfile;
+						friendsProfileDict.TryGetValue(friendInfo.Key, out outgoingProfile);
 
-						if(status == PackageStatus.Message){
-							IPublicProfile outgoingProfile;
-							buddyConcurrentDict.TryGetValue(outgoingSocket.Key, out outgoingProfile);
-
-							deliveryPackage = new Package(
-								null, 
-								userPublicProfile.UserNick,
-								PackageStatus.Message,
-								outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData))
-							);
-						}
-						else if(status == PackageStatus.NickUpdate){
-							deliveryPackage = new Package(
-								userPublicProfile,
-								strData,
-								PackageStatus.NickUpdate,
-								null
-							);
-						}
-						else{
-							deliveryPackage = new Package(null, userPublicProfile.UserNick, status, null);
-						}
+						Package deliveryPackage = new Package(
+							null,
+							new Tuple<Guid,string>(Guid.Empty, userPublicProfile.UserNick),
+							PackageStatus.Message,
+							outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData)),
+							0
+						);					
 
 						bf.Serialize(ms, deliveryPackage);
 						ms.Seek(0, SeekOrigin.Begin);
 						outgoingData = ms.ToArray();
-						outgoingSocket.Value.Send(outgoingData, 0, outgoingData.Length, SocketFlags.None);
+						
+						remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+						remoteSocket.Connect(friendIP);
+						remoteSocket.Send(outgoingData, 0, outgoingData.Length, SocketFlags.None);
+						remoteSocket.Close();
+						remoteSocket = null;
+						outgoingData = null;
 					}
 				}
 			}
 			catch(SocketException se){
 				Task.Factory.StartNew(()=>{
 					MessageBox.Show("Error while sending data" + Environment.NewLine +
-									"Remote ip: " + client.RemoteEndPoint.ToString() + Environment.NewLine +
+									"Remote ip: " + remoteSocket.RemoteEndPoint.ToString() + Environment.NewLine +
 									"Socket Exception: " + Environment.NewLine +
 									se.Message + Environment.NewLine +
 									"Error Code: " + se.NativeErrorCode + Environment.NewLine);
 				});
+			
+				remoteSocket.Dispose();
+				remoteSocket = null;
+				outgoingData = null;
 			}
 			catch(Exception ex){
 				Task.Factory.StartNew(()=>{
 					MessageBox.Show("Error while sending data" + Environment.NewLine +
 									ex.Message + Environment.NewLine);
 				});
-			}			
+			}
 		}
 
 
-		void ProcessIncomingData(Socket client){
+		async void SendOther(PackageStatus status){
+			// There's a better way to do this so we can catch all the socketException and handle it correctly.
+			// When we catch an exception most likely user had disconnected and we need to update that change
+			// with the program.			
+			IPEndPoint friendIP;	
+			byte[] outgoingData = null;
+			Socket remoteSocket = null;
+
+			try{			
+				using(MemoryStream ms = new MemoryStream()){            // might need to handle memory error in the future
+					BinaryFormatter bf = new BinaryFormatter();
+
+					Package deliveryPackage = null;
+					if(status == PackageStatus.NickUpdate){
+						deliveryPackage = new Package(
+							null,
+							new Tuple<Guid,string>(userPublicProfile.GlobalId, userPublicProfile.UserNick),
+							PackageStatus.NickUpdate,
+							null,
+							0
+						);
+					}						
+					else{ // PackageStatus.LogOff
+						  // PackageStatus.Connect is taken care of in ConnectToRemote()
+						deliveryPackage = new Package(
+							null,
+							new Tuple<Guid,string>(userPublicProfile.GlobalId, userPublicProfile.UserNick),
+							PackageStatus.LogOff,
+							null,
+							0
+						);
+					}
+
+					bf.Serialize(ms, deliveryPackage);
+					ms.Seek(0, SeekOrigin.Begin);
+					outgoingData = ms.ToArray();					
+				}				
+
+				foreach(var friendInfo in friendsIPaddressDict){
+					friendIP = friendInfo.Value;
+
+					IPublicProfile outgoingProfile;
+					friendsProfileDict.TryGetValue(friendInfo.Key, out outgoingProfile);
+						
+					remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					remoteSocket.Connect(friendIP);
+					remoteSocket.Send(outgoingData, 0, outgoingData.Length, SocketFlags.None);
+					remoteSocket.Close();
+					remoteSocket = null;
+				}
+			}
+			catch(SocketException se){
+				Task.Factory.StartNew(()=>{
+					MessageBox.Show("Error while sending data" + Environment.NewLine +
+									"Remote ip: " + remoteSocket.RemoteEndPoint.ToString() + Environment.NewLine +
+									"Socket Exception: " + Environment.NewLine +
+									se.Message + Environment.NewLine +
+									"Error Code: " + se.NativeErrorCode + Environment.NewLine);
+				});
+
+				remoteSocket.Dispose();
+				remoteSocket = null;
+			}
+			catch(Exception ex){
+				Task.Factory.StartNew(()=>{
+					MessageBox.Show("Error while sending data" + Environment.NewLine +
+									ex.Message + Environment.NewLine);
+				});
+			}	
+		}
+
+
+
+		// for now if the same user keep connecting, do nothing. Might need to change in the future
+		void ProcessIncomingData(Socket client){			
 			Package deliveryPackage;
 
 			int buffer = 1024;
@@ -237,28 +321,43 @@ namespace Network
 
 				BinaryFormatter bf = new BinaryFormatter();
 				deliveryPackage = (Package)bf.Deserialize(ms);
-			}
+			}			
 
 			switch(deliveryPackage.PackageStatus){
-				case PackageStatus.SignIn:
-					clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
-					buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
+				case PackageStatus.Connect:
+					if(friendsProfileDict.ContainsKey(deliveryPackage.PublicProfile.GlobalId))
+						return;
+
+					// get the remote IPEndPoint
+					IPEndPoint remoteAdd = new IPEndPoint( ((IPEndPoint)client.RemoteEndPoint).Address, deliveryPackage.Port );
+					friendsIPaddressDict.TryAdd(deliveryPackage.PublicProfile.GlobalId, remoteAdd);
+
+					friendsProfileDict.TryAdd(deliveryPackage.PublicProfile.GlobalId, deliveryPackage.PublicProfile);
+
+					Package replyPackage = new Package(userPublicProfile, null, PackageStatus.Connect, null, defaultPort);
+					using(MemoryStream ms = new MemoryStream()){
+						BinaryFormatter bf = new BinaryFormatter();
+						bf.Serialize(ms, replyPackage);
+						ms.Seek(0, SeekOrigin.Begin);
+						byte[] raw = ms.ToArray();
+						
+						Socket replySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+						replySocket.Connect(remoteAdd);
+						replySocket.Send(raw, 0, raw.Length, SocketFlags.None);
+						replySocket.Close();
+						replySocket = null;
+					}
 					break;
 
 				case PackageStatus.LogOff:
-					Socket dummySock;
+					IPEndPoint dummyEndPoint;
 					IPublicProfile dummyProfile;
-					clientSocketDict.TryRemove(deliveryPackage.UserNick, out dummySock);
-					buddyConcurrentDict.TryRemove(deliveryPackage.UserNick, out dummyProfile);
+					friendsIPaddressDict.TryRemove(deliveryPackage.Information.Item1, out dummyEndPoint);
+					friendsProfileDict.TryRemove(deliveryPackage.Information.Item1, out dummyProfile);
 					break;
 
 				case PackageStatus.NickUpdate:
-					Socket dummy;
-					IPublicProfile dummyPP;
-					clientSocketDict.TryRemove(deliveryPackage.UserNick, out dummy);
-					clientSocketDict.TryAdd(deliveryPackage.PublicProfile.UserNick, client);
-					buddyConcurrentDict.TryRemove(deliveryPackage.UserNick, out dummyPP);
-					buddyConcurrentDict.TryAdd(deliveryPackage.PublicProfile.UserNick, deliveryPackage.PublicProfile);
+					friendsProfileDict[deliveryPackage.Information.Item1].UserNick = deliveryPackage.Information.Item2;
 					break;
 
 				case PackageStatus.Message:
@@ -268,8 +367,21 @@ namespace Network
 			}
 	
 			P2CDS(arrivedPackage, null);					// let subscriber know they have a package
-		}
+		}	
 
+
+		public void ConnectToRemote(string ip){
+			if(ipEnteredDict.ContainsKey(ip))
+				return;
+
+
+			// if user enter the wrong IP return. need to implement a better way to let user know ip address is wrong
+			IPAddress remoteAddress;
+			if(!IPAddress.TryParse(ip, out remoteAddress))
+				return;
+
+
+		}
 
 		#endregion Methods
 
