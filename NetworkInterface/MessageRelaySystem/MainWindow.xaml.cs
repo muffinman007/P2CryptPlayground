@@ -60,9 +60,9 @@ namespace MessageRelaySystem {
 			
 			if(networkServer == null){
 				if(String.IsNullOrEmpty(txtCustomPort.Text))
-					networkServer = new NetworkServer(userAccount.PublicProfile, Application.Current.Dispatcher);
+					networkServer = new NetworkServer(userAccount.PublicProfile, lbHack); 
 				else
-					networkServer = new NetworkServer(userAccount.PublicProfile, Application.Current.Dispatcher, int.Parse(txtCustomPort.Text));
+					networkServer = new NetworkServer(userAccount.PublicProfile, lbHack, int.Parse(txtCustomPort.Text));
 
 				networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
 			}
@@ -206,19 +206,5 @@ namespace MessageRelaySystem {
 		}
 
 	}
-
-
-	// allow updating in UI Thread from different thread
-	static class ControlExtension{
-		public static void InvokeIfRequired(this Control control, Action action){
-			if(control.Dispatcher.CheckAccess()){
-				action();
-			}
-			else{
-				control.Dispatcher.Invoke(action);
-			}
-		}
-	}
-
 
 }

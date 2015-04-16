@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Windows.Controls;
 
 using P2CCore;
 using System.IO;
@@ -54,14 +55,17 @@ namespace Network
 
 		int defaultPort;
 
+		System.Windows.Controls.Control crossCommuniationHack;
+
 		#endregion Fields
 
 
 		#region Constructors
 
-		public NetworkServer(IPublicProfile userPublicProfile, int port = 12345, int backlog = 100)
+		public NetworkServer(IPublicProfile userPublicProfile, System.Windows.Controls.Control control, int port = 12345, int backlog = 100)
 		{	
 			this.userPublicProfile = userPublicProfile;
+			crossCommuniationHack = control;
 
 			hasStartedOnce = false;
 			hasPackage = false;
@@ -393,8 +397,9 @@ namespace Network
 					break;			
 			}		
 
-		
-			P2CDS(deliveryPackage);					// let subscriber know they have a package
+			crossCommuniationHack.InvokeIfRequired(()=>{
+			   P2CDS(deliveryPackage);					// let subscriber know they have a package
+			});
 		
 		}	
 
