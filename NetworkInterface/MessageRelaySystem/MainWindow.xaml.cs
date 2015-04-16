@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 using Network;
 using P2CCore;
@@ -31,12 +32,13 @@ namespace MessageRelaySystem {
 		NetworkServer networkServer; 
 		UserAccount userAccount;
 
-		int messageSentCounter = 0;
+		int messageSentCounter = 0;	
+
 		#endregion Fields
 
 		public MainWindow() {
 			InitializeComponent();
-
+			
 			for(int i = 0; i < 256; ++i){
 				cbFirstIP.Items.Add(i);
 				cbSecondIP.Items.Add(i);
@@ -58,9 +60,9 @@ namespace MessageRelaySystem {
 			
 			if(networkServer == null){
 				if(String.IsNullOrEmpty(txtCustomPort.Text))
-					networkServer = new NetworkServer(userAccount.PublicProfile);
+					networkServer = new NetworkServer(userAccount.PublicProfile, Application.Current.Dispatcher);
 				else
-					networkServer = new NetworkServer(userAccount.PublicProfile, int.Parse(txtCustomPort.Text));
+					networkServer = new NetworkServer(userAccount.PublicProfile, Application.Current.Dispatcher, int.Parse(txtCustomPort.Text));
 
 				networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
 			}
@@ -132,10 +134,8 @@ namespace MessageRelaySystem {
 		}
 
 
-		async void PackageHandler(){
+		async void PackageHandler(Package package){
 			string str = string.Empty;
-
-			Package package = networkServer.Package;
 
 			if(package.PackageStatus == PackageStatus.LogOff || package.PackageStatus == PackageStatus.NickUpdate)
 				str = txtFriendsList.Text;

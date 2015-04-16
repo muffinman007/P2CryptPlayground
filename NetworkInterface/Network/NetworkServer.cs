@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Windows.Threading;
 
 using P2CCore;
 using System.IO;
@@ -32,7 +33,7 @@ namespace Network
 
 		#region Fields
 		// this is how the app will know if there's incoming package waiting to be deliver. 
-		public delegate void P2CDeliveryService();
+		public delegate void P2CDeliveryService(Package package);
 		public event P2CDeliveryService P2CDS;
 
 		//switch
@@ -52,14 +53,18 @@ namespace Network
 
 		int defaultPort;
 
+		Dispatcher uiDispatcher;
+
 		#endregion Fields
 
 
 		#region Constructors
 
-		public NetworkServer(IPublicProfile userPublicProfile, int port = 12345, int backlog = 100)
+		public NetworkServer(IPublicProfile userPublicProfile, Dispatcher dispatcher, int port = 12345, int backlog = 100)
 		{	
 			this.userPublicProfile = userPublicProfile;
+
+			uiDispatcher = dispatcher;
 
 			hasStartedOnce = false;
 				
@@ -395,7 +400,10 @@ namespace Network
 			}
 			
 			packageQueue.Enqueue(deliveryPackage);
-			P2CDS();					// let subscriber know they have a package
+
+			uiDispatcher.Invoke(()=>{
+				P2CDS(this.Package);					// let subscriber know they have a package
+			});
 		}	
 
 
