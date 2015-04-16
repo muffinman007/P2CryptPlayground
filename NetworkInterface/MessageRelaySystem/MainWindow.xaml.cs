@@ -212,6 +212,9 @@ namespace MessageRelaySystem {
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
 			// hide the window giving it time to cleaning release resources in networkServer
 			this.Hide();
+			isWindowClosing = true;
+			btnStop_Click(this, null);
+
 			networkServer.P2CDS -= PackageHandler;
 			networkServer.Exit();
 			networkServer = null;
