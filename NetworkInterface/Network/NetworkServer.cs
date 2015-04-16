@@ -36,7 +36,8 @@ namespace Network
 
 		//switch
 		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
-		
+		bool hasStartedOnce;						// allow for loging back in when user disconnect.
+
 		ConcurrentDictionary<Guid, IPublicProfile>		friendsProfileDict;
 		ConcurrentDictionary<Guid, IPEndPoint>			friendsIPaddressDict;
 				
@@ -62,7 +63,8 @@ namespace Network
 			this.userPublicProfile = userPublicProfile;
 
 			hasPackage = false;
-		
+			hasStartedOnce = false;
+				
 			friendsProfileDict		= new ConcurrentDictionary<Guid,IPublicProfile>();
 			friendsIPaddressDict	= new ConcurrentDictionary<Guid,IPEndPoint>();
 
@@ -139,16 +141,30 @@ namespace Network
 
 				Task.Factory.StartNew(()=>{ MessageBox.Show("Debug inside serverTask. exiting."); });
 			});
+
+			if(hasStartedOnce){
+				// let friends know user reconnected
+				Task.Factory.StartNew(()=>{
+					foreach(var friendInfo in friendsIPaddressDict){
+						DeliverConnectRequest(friendInfo.Value);
+					}
+				});
+			}
+
+			hasStartedOnce = true;
 		}
 
 
 		/// <summary>
-		/// Gracefully disconnect the NetworkServer
+		/// Gracefully disconnect the NetworkServer. Disconnect is instant. Disconnect stop you from receiving data.
 		/// </summary>
 		public void Disconnect()
 		{
 			if(serverTask == null)
 				return;
+
+
+			Task.Factory.StartNew(()=>{ SendOther(PackageStatus.LogOff); });
 
 			//server.Shutdown(SocketShutdown.Both);
 			server.Close();
@@ -231,7 +247,6 @@ namespace Network
 			}
 		}
 
-
 		async void SendOther(PackageStatus status){
 			// There's a better way to do this so we can catch all the socketException and handle it correctly.
 			// When we catch an exception most likely user had disconnected and we need to update that change
@@ -253,7 +268,7 @@ namespace Network
 							null,
 							0
 						);
-					}						
+					}				
 					else{ // PackageStatus.LogOff
 						  // PackageStatus.Connect is taken care of in ConnectToRemote()
 						deliveryPackage = new Package(
@@ -306,7 +321,7 @@ namespace Network
 
 
 		// for now if the same user keep connecting, do nothing. Might need to change in the future
-		void ProcessIncomingData(Socket client){			
+		public void ProcessIncomingData(Socket client){			
 			Package deliveryPackage;
 
 			int buffer = 1024;
@@ -349,21 +364,21 @@ namespace Network
 					}
 					break;
 
-				case PackageStatus.LogOff:
-					IPEndPoint dummyEndPoint;
-					IPublicProfile dummyProfile;
-					friendsIPaddressDict.TryRemove(deliveryPackage.Information.Item1, out dummyEndPoint);
-					friendsProfileDict.TryRemove(deliveryPackage.Information.Item1, out dummyProfile);
+				case PackageStatus.Message:
+					arrivedPackage = deliveryPackage;
+					hasPackage = true;
 					break;
 
 				case PackageStatus.NickUpdate:
 					friendsProfileDict[deliveryPackage.Information.Item1].UserNick = deliveryPackage.Information.Item2;
 					break;
 
-				case PackageStatus.Message:
-					arrivedPackage = deliveryPackage;
-					hasPackage = true;
-					break;
+				case PackageStatus.LogOff:
+					IPEndPoint dummyEndPoint;
+					IPublicProfile dummyProfile;
+					friendsIPaddressDict.TryRemove(deliveryPackage.Information.Item1, out dummyEndPoint);
+					friendsProfileDict.TryRemove(deliveryPackage.Information.Item1, out dummyProfile);
+					break;			
 			}
 	
 			P2CDS(arrivedPackage, null);					// let subscriber know they have a package
@@ -387,6 +402,10 @@ namespace Network
 			else if(port < 1 || port > ushort.MaxValue)
 				return;
 
+			DeliverConnectRequest(new IPEndPoint(remoteIP, port));	
+		}
+
+		public void DeliverConnectRequest(IPEndPoint remoteEndPoint){
 			Package deliveryPackage = new Package(userPublicProfile, null, PackageStatus.Connect, null, defaultPort);
 			
 			try{
@@ -399,7 +418,7 @@ namespace Network
 					byte[] data = ms.ToArray();
 
 					Socket remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-					remoteSocket.Connect(new IPEndPoint(remoteIP, port));
+					remoteSocket.Connect(remoteEndPoint);
 					remoteSocket.Send(data, 0, data.Length, SocketFlags.None);
 					remoteSocket.Close();
 					remoteSocket = null;
@@ -407,11 +426,12 @@ namespace Network
 			}
 			catch(Exception ex){
 				Task.Factory.StartNew(()=>{
-					MessageBox.Show("Inside ConnectToRemote." + Environment.NewLine +
+					MessageBox.Show("Inside DeliverConnectRequest." + Environment.NewLine +
+									"Remote End Point: " + remoteEndPoint.ToString() + Environment.NewLine +
 									"Exception Type: " + ex.GetType() + Environment.NewLine +
 									"Message: " + ex.Message + Environment.NewLine);
 				});
-			}	
+			}
 		}
 
 		#endregion Methods

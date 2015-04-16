@@ -26,6 +26,8 @@ namespace MessageRelaySystem {
 
 		#region Fields
 
+		bool hasServerStarted;
+
 		NetworkServer networkServer; 
 		UserAccount userAccount;
 
@@ -46,50 +48,60 @@ namespace MessageRelaySystem {
 			cbSecondIP.SelectedIndex	= 0;
 			cbThirdIP.SelectedIndex		= 0;
 			cbFourthIP.SelectedIndex	= 0;
+
+			hasServerStarted = false;
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
-			userAccount = new UserAccount(){UserNick = txtNick.Text};
+			if(userAccount == null)
+				userAccount = new UserAccount(){UserNick = txtNick.Text};
 			
-			networkServer = new NetworkServer(userAccount.PublicProfile);
-			networkServer.Start();
-			
-			networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
+			if(networkServer == null){
+				networkServer = new NetworkServer(userAccount.PublicProfile);
+				networkServer.P2CDS += new NetworkServer.P2CDeliveryService(PackageHandler);
+			}
+
+			// we need to await this but most also give user a progress remote or a busy signal letting them know the network is starting up
+			networkServer.Start();			
 
 			btnStart.IsEnabled = false;
+			hasServerStarted = true;
 
 			btnStop.IsEnabled = true;
 			btnRemoteConnect.IsEnabled = true;
+			btnSend.IsEnabled = true;
+			btnChangeNick.IsEnabled = true;
 
 			txtStatus.Text = "Server running";
 		}
 
 		private void btnStop_Click(object sender, RoutedEventArgs e) {
 			networkServer.Disconnect();
+			hasServerStarted = false;
+
+			// notified everyone user logoff
+			Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.LogOff, string.Empty); });
 
 			btnStart.IsEnabled = true;
 
 			btnStop.IsEnabled = false;
 			btnRemoteConnect.IsEnabled = false;
 			btnSend.IsEnabled = false;
+			btnChangeNick.IsEnabled = false;
 
 			txtStatus.Text = "Server stopped";
 		}
 
-		private void txtNick_TextChanged(object sender, TextChangedEventArgs e) {
-			if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
-				btnRemoteConnect.IsEnabled = false;
-				btnSend.IsEnabled = false;
-				btnChangeNick.IsEnabled = false;
 
-				if(userAccount == null)
-					btnStart.IsEnabled = false;
-			}
-			else{
-				btnRemoteConnect.IsEnabled = true;
-				btnSend.IsEnabled = true;
-				btnStart.IsEnabled = true;
-				btnChangeNick.IsEnabled = true;
+		private void txtNick_TextChanged(object sender, TextChangedEventArgs e) {
+			// Require a nick before server can be started for the first time
+			if(!hasServerStarted){
+				if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
+					btnSend.IsEnabled = false;
+				}
+				else{
+					btnStart.IsEnabled = true;
+				}
 			}
 		}
 
