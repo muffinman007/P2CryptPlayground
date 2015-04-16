@@ -370,17 +370,48 @@ namespace Network
 		}	
 
 
+		// if user enter wrong ip , do nothing. Maybe IP error correction should be done at the main program?
+		// if user enter the wrong IP return. need to implement a better way to let user know ip address is wrong
 		public void ConnectToRemote(string ip){
-			if(ipEnteredDict.ContainsKey(ip))
+			string[] ipParts = ip.Split(new string[]{":"}, StringSplitOptions.None);
+
+			IPAddress remoteIP;
+
+			if(!IPAddress.TryParse(ipParts[0], out remoteIP))
 				return;
 
+			int port;
 
-			// if user enter the wrong IP return. need to implement a better way to let user know ip address is wrong
-			IPAddress remoteAddress;
-			if(!IPAddress.TryParse(ip, out remoteAddress))
+			if(!int.TryParse(ipParts[1], out port))
+				return;
+			else if(port < 1 || port > ushort.MaxValue)
 				return;
 
+			Package deliveryPackage = new Package(userPublicProfile, null, PackageStatus.Connect, null, defaultPort);
+			
+			try{
+				using(MemoryStream ms = new MemoryStream()){
+					BinaryFormatter bf = new BinaryFormatter();
 
+					bf.Serialize(ms, deliveryPackage);
+					ms.Seek(0, SeekOrigin.Begin);
+
+					byte[] data = ms.ToArray();
+
+					Socket remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					remoteSocket.Connect(new IPEndPoint(remoteIP, port));
+					remoteSocket.Send(data, 0, data.Length, SocketFlags.None);
+					remoteSocket.Close();
+					remoteSocket = null;
+				}
+			}
+			catch(Exception ex){
+				Task.Factory.StartNew(()=>{
+					MessageBox.Show("Inside ConnectToRemote." + Environment.NewLine +
+									"Exception Type: " + ex.GetType() + Environment.NewLine +
+									"Message: " + ex.Message + Environment.NewLine);
+				});
+			}	
 		}
 
 		#endregion Methods

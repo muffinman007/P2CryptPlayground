@@ -169,7 +169,7 @@ namespace MessageRelaySystem {
 		}
 
 		private void btnRemoteConnect_Click(object sender, RoutedEventArgs e) {
-			string ip = cbFirstIP.Text + "." + cbSecondIP.Text + "." + cbThirdIP.Text + "." + cbFourthIP.Text;
+			string ip = cbFirstIP.Text + "." + cbSecondIP.Text + "." + cbThirdIP.Text + "." + cbFourthIP.Text + ":" + txtPort.Text;
 			
 			Task.Factory.StartNew(()=>{
 				networkServer.ConnectToRemote(ip);
