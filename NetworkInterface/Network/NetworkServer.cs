@@ -4,6 +4,9 @@
  * 
  * Controls outgoing/incoming data for the program.
  * 
+ * NOTE: on disconnect or exiting the main window . The lisenting Socket will try an exception. That exception we can ignore because we want the listening socket to close.
+ *       I have the exception pop up just for our own information.
+ * 
  * TO DO: 
  *		- on send error to a specific ip , remove the owner of the specific ip and the ip 
  *		- I break the aysnc naming convention on some of the methods. It's so we can decided wheather or not to keep the mehtod as async or not.
