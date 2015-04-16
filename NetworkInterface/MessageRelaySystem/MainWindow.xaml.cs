@@ -132,8 +132,11 @@ namespace MessageRelaySystem {
 		}
 
 
-		async void PackageHandler(Package package, EventArgs e){
+		async void PackageHandler(){
 			string str = string.Empty;
+
+			Package package = networkServer.Package;
+
 			if(package.PackageStatus == PackageStatus.LogOff || package.PackageStatus == PackageStatus.NickUpdate)
 				str = txtFriendsList.Text;
 

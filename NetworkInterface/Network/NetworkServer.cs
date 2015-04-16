@@ -32,23 +32,21 @@ namespace Network
 
 		#region Fields
 		// this is how the app will know if there's incoming package waiting to be deliver. 
-		public delegate void P2CDeliveryService(Package package, EventArgs e);
+		public delegate void P2CDeliveryService();
 		public event P2CDeliveryService P2CDS;
 
 		//switch
-		bool hasPackage;							// when NetworkServer received data and finish de-serializing it this turn to true
 		bool hasStartedOnce;						// allow for loging back in when user disconnect.
 
 		ConcurrentDictionary<Guid, IPublicProfile>		friendsProfileDict;
 		ConcurrentDictionary<Guid, IPEndPoint>			friendsIPaddressDict;
-				
+		ConcurrentQueue<Package>						packageQueue;
+		
 		Socket server;
 
 		CancellationTokenSource tokenSource;
 		Task serverTask;
 		Task[] sendTask;
-
-		Package arrivedPackage;
 
 		IPublicProfile userPublicProfile;
 
@@ -63,11 +61,11 @@ namespace Network
 		{	
 			this.userPublicProfile = userPublicProfile;
 
-			hasPackage = false;
 			hasStartedOnce = false;
 				
 			friendsProfileDict		= new ConcurrentDictionary<Guid,IPublicProfile>();
 			friendsIPaddressDict	= new ConcurrentDictionary<Guid,IPEndPoint>();
+			packageQueue			= new ConcurrentQueue<Package>();
 
 			defaultPort = port;
 
@@ -98,8 +96,11 @@ namespace Network
 		{
 			get
 			{
-				if(hasPackage)
+				if(!packageQueue.IsEmpty){
+					Package arrivedPackage;
+					packageQueue.TryDequeue(out arrivedPackage);
 					return arrivedPackage;
+				}
 				else{
 					return null;						// should we return an empty package?
 				}
@@ -378,8 +379,7 @@ namespace Network
 					break;
 
 				case PackageStatus.Message:
-					arrivedPackage = deliveryPackage;
-					hasPackage = true;
+					// message is handle in the main program
 					break;
 
 				case PackageStatus.NickUpdate:
@@ -393,8 +393,9 @@ namespace Network
 					friendsProfileDict.TryRemove(deliveryPackage.Information.Item1, out dummyProfile);
 					break;			
 			}
-	
-			P2CDS(deliveryPackage, null);					// let subscriber know they have a package
+			
+			packageQueue.Enqueue(deliveryPackage);
+			P2CDS();					// let subscriber know they have a package
 		}	
 
 
