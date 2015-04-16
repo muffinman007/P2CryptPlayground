@@ -173,6 +173,7 @@ namespace MessageRelaySystem {
 														  select nick;
 						txtChatWindow.InvokeIfRequired(()=>{
 							txtChatWindow.AppendText(package.Information.Item2 + " logged out." + Environment.NewLine);
+							txtFriendsList.Clear();
 							foreach(var nick in listOfNicks)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
@@ -187,6 +188,7 @@ namespace MessageRelaySystem {
 						}
 						txtChatWindow.InvokeIfRequired(()=>{
 							txtChatWindow.AppendText(package.Information.Item2 + " changed to " + package.Information.Item3 + Environment.NewLine);
+							txtFriendsList.Clear();
 							foreach(var nick in nickArray)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
