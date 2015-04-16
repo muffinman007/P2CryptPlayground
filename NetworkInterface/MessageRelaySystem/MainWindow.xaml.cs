@@ -28,6 +28,7 @@ namespace MessageRelaySystem {
 		#region Fields
 
 		bool hasServerStarted;
+		bool isWindowClosing;
 
 		NetworkServer networkServer; 
 		UserAccount userAccount;
@@ -52,6 +53,7 @@ namespace MessageRelaySystem {
 			cbFourthIP.SelectedIndex	= 0;
 
 			hasServerStarted = false;
+			isWindowClosing = false;
 		}
 
 		private void btnStart_Click(object sender, RoutedEventArgs e) {
@@ -88,14 +90,16 @@ namespace MessageRelaySystem {
 			// notified everyone user logoff
 			Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.LogOff, string.Empty); });
 
-			btnStart.IsEnabled = true;
+			if(!isWindowClosing){
+				btnStart.IsEnabled = true;
 
-			btnStop.IsEnabled = false;
-			btnRemoteConnect.IsEnabled = false;
-			btnSend.IsEnabled = false;
-			btnChangeNick.IsEnabled = false;
+				btnStop.IsEnabled = false;
+				btnRemoteConnect.IsEnabled = false;
+				btnSend.IsEnabled = false;
+				btnChangeNick.IsEnabled = false;
 
-			txtStatus.Text = "Server stopped";
+				txtStatus.Text = "Server stopped";
+			}
 		}
 
 
@@ -203,6 +207,14 @@ namespace MessageRelaySystem {
 
 			Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.NickUpdate, oldNick); });
 			txtStatus.Text = "Nick change: " + oldNick + " to " + txtNick.Text;
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+			// hide the window giving it time to cleaning release resources in networkServer
+			this.Hide();
+			networkServer.P2CDS -= PackageHandler;
+			networkServer.Exit();
+			networkServer = null;
 		}
 
 	}

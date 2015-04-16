@@ -6,6 +6,7 @@
  * 
  * TO DO: 
  *		- on send error to a specific ip , remove the owner of the specific ip and the ip 
+ *		- I break the aysnc naming convention on some of the methods. It's so we can decided wheather or not to keep the mehtod as async or not.
  * 
  **/
 
@@ -49,7 +50,6 @@ namespace Network
 
 		CancellationTokenSource tokenSource;
 		Task serverTask;
-		Task[] sendTask;
 
 		IPublicProfile userPublicProfile;
 
@@ -452,6 +452,14 @@ namespace Network
 				});
 			}
 		}
+
+
+		public void Exit(){		
+			arrivedPackage = null;
+			friendsIPaddressDict.Clear();
+			friendsProfileDict.Clear();
+			crossCommuniationHack = null;
+		}		
 
 		#endregion Methods
 

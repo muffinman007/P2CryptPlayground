@@ -206,6 +206,14 @@ namespace MessageRelaySystem {
             switch (connectionId)
             {
             case 1:
+            
+            #line 4 "..\..\MainWindow.xaml"
+            ((MessageRelaySystem.MainWindow)(target)).Closing += new System.ComponentModel.CancelEventHandler(this.Window_Closing);
+            
+            #line default
+            #line hidden
+            return;
+            case 2:
             this.txtNick = ((System.Windows.Controls.TextBox)(target));
             
             #line 7 "..\..\MainWindow.xaml"
@@ -214,19 +222,19 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 2:
+            case 3:
             this.cbFirstIP = ((System.Windows.Controls.ComboBox)(target));
             return;
-            case 3:
+            case 4:
             this.cbSecondIP = ((System.Windows.Controls.ComboBox)(target));
             return;
-            case 4:
+            case 5:
             this.cbThirdIP = ((System.Windows.Controls.ComboBox)(target));
             return;
-            case 5:
+            case 6:
             this.cbFourthIP = ((System.Windows.Controls.ComboBox)(target));
             return;
-            case 6:
+            case 7:
             this.btnStart = ((System.Windows.Controls.Button)(target));
             
             #line 16 "..\..\MainWindow.xaml"
@@ -235,7 +243,7 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 7:
+            case 8:
             this.btnStop = ((System.Windows.Controls.Button)(target));
             
             #line 17 "..\..\MainWindow.xaml"
@@ -244,7 +252,7 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 8:
+            case 9:
             this.btnRemoteConnect = ((System.Windows.Controls.Button)(target));
             
             #line 18 "..\..\MainWindow.xaml"
@@ -253,13 +261,13 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 9:
+            case 10:
             this.txtChatWindow = ((System.Windows.Controls.TextBox)(target));
             return;
-            case 10:
+            case 11:
             this.txtMessage = ((System.Windows.Controls.TextBox)(target));
             return;
-            case 11:
+            case 12:
             this.btnSend = ((System.Windows.Controls.Button)(target));
             
             #line 29 "..\..\MainWindow.xaml"
@@ -268,13 +276,13 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 12:
+            case 13:
             this.txtStatus = ((System.Windows.Controls.TextBlock)(target));
             return;
-            case 13:
+            case 14:
             this.txtFriendsList = ((System.Windows.Controls.TextBox)(target));
             return;
-            case 14:
+            case 15:
             this.btnChangeNick = ((System.Windows.Controls.Button)(target));
             
             #line 32 "..\..\MainWindow.xaml"
@@ -283,13 +291,13 @@ namespace MessageRelaySystem {
             #line default
             #line hidden
             return;
-            case 15:
+            case 16:
             this.txtPort = ((System.Windows.Controls.TextBox)(target));
             return;
-            case 16:
+            case 17:
             this.txtCustomPort = ((System.Windows.Controls.TextBox)(target));
             return;
-            case 17:
+            case 18:
             this.lbHack = ((System.Windows.Controls.Label)(target));
             return;
             }
