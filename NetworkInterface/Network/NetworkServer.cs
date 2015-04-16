@@ -164,7 +164,7 @@ namespace Network
 				return;
 
 
-			Task.Factory.StartNew(()=>{ SendOther(PackageStatus.LogOff); });
+			Task.Factory.StartNew(()=>{ SendOther(PackageStatus.LogOff, null); });
 
 			//server.Shutdown(SocketShutdown.Both);
 			server.Close();
@@ -185,7 +185,7 @@ namespace Network
 			if(status == PackageStatus.Message)
 				SendMessage(strData);
 			else
-				SendOther(status);
+				SendOther(status, strData);
 		}
 
 		async void SendMessage(string strData){
@@ -207,7 +207,7 @@ namespace Network
 
 						Package deliveryPackage = new Package(
 							null,
-							new Tuple<Guid,string>(Guid.Empty, userPublicProfile.UserNick),
+							new Tuple<Guid,string,string>(Guid.Empty, userPublicProfile.UserNick, string.Empty),
 							PackageStatus.Message,
 							outgoingProfile.Encrypt(Encoding.UTF8.GetBytes(strData)),
 							0
@@ -247,7 +247,7 @@ namespace Network
 			}
 		}
 
-		async void SendOther(PackageStatus status){
+		async void SendOther(PackageStatus status, string strData){
 			// There's a better way to do this so we can catch all the socketException and handle it correctly.
 			// When we catch an exception most likely user had disconnected and we need to update that change
 			// with the program.			
@@ -263,7 +263,7 @@ namespace Network
 					if(status == PackageStatus.NickUpdate){
 						deliveryPackage = new Package(
 							null,
-							new Tuple<Guid,string>(userPublicProfile.GlobalId, userPublicProfile.UserNick),
+							new Tuple<Guid,string, string>(userPublicProfile.GlobalId, strData, userPublicProfile.UserNick),
 							PackageStatus.NickUpdate,
 							null,
 							0
@@ -273,7 +273,7 @@ namespace Network
 						  // PackageStatus.Connect is taken care of in ConnectToRemote()
 						deliveryPackage = new Package(
 							null,
-							new Tuple<Guid,string>(userPublicProfile.GlobalId, userPublicProfile.UserNick),
+							new Tuple<Guid,string,string>(userPublicProfile.GlobalId, userPublicProfile.UserNick, string.Empty),
 							PackageStatus.LogOff,
 							null,
 							0

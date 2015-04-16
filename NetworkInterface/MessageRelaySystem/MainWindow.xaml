@@ -29,7 +29,7 @@
 		<Button x:Name="btnSend" Content="Send" HorizontalAlignment="Left" Margin="10,441,0,0" VerticalAlignment="Top" Width="75" IsEnabled="False" Click="btnSend_Click"/>
 		<TextBlock x:Name="txtStatus" HorizontalAlignment="Left" Margin="115,444,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="464"/>
 		<TextBox x:Name="txtFriendsList" HorizontalAlignment="Left" Height="426" Margin="531,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169" IsReadOnlyCaretVisible="True" IsReadOnly="True"/>
-		<Button x:Name="btnChangeNick" Content="Change Nick" HorizontalAlignment="Left" Margin="251,10,0,0" VerticalAlignment="Top" Width="86" IsEnabled="False"/>
+		<Button x:Name="btnChangeNick" Content="Change Nick" HorizontalAlignment="Left" Margin="251,10,0,0" VerticalAlignment="Top" Width="86" IsEnabled="False" Click="btnChangeNick_Click"/>
 		<TextBox x:Name="txtPort" HorizontalAlignment="Left" Height="23" Margin="457,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="69"/>
 		<Label Content=":" HorizontalAlignment="Left" Margin="445,39,0,0" VerticalAlignment="Top"/>
 

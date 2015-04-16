@@ -260,6 +260,12 @@ namespace MessageRelaySystem {
             return;
             case 14:
             this.btnChangeNick = ((System.Windows.Controls.Button)(target));
+            
+            #line 32 "..\..\MainWindow.xaml"
+            this.btnChangeNick.Click += new System.Windows.RoutedEventHandler(this.btnChangeNick_Click);
+            
+            #line default
+            #line hidden
             return;
             case 15:
             this.txtPort = ((System.Windows.Controls.TextBox)(target));

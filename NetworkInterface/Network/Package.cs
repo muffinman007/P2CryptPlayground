@@ -20,7 +20,7 @@ namespace Network
 		IPublicProfile publicProfile;
 		byte[] data;
 		PackageStatus status;
-		Tuple<Guid, string> information;
+		Tuple<Guid, string, string> information;
 		int port;
 
 		#endregion Fields
@@ -43,7 +43,7 @@ namespace Network
 			get{ return status; }
 		}
 
-		public Tuple<Guid, string> Information
+		public Tuple<Guid, string, string> Information
 		{
 			get{ return information; }
 		}
@@ -57,7 +57,7 @@ namespace Network
 
         #region Constructors
 
-        public Package(IPublicProfile userProfile, Tuple<Guid, string> info, PackageStatus status, byte[] data, int port)
+        public Package(IPublicProfile userProfile, Tuple<Guid, string, string> info, PackageStatus status, byte[] data, int port)
         {
             this.publicProfile = userProfile;
 			this.information = info;

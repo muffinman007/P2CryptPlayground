@@ -95,13 +95,17 @@ namespace MessageRelaySystem {
 
 		private void txtNick_TextChanged(object sender, TextChangedEventArgs e) {
 			// Require a nick before server can be started for the first time
-			if(!hasServerStarted){
-				if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
+			if(String.IsNullOrEmpty(txtNick.Text) || String.IsNullOrWhiteSpace(txtNick.Text)){
+				if(!hasServerStarted)
 					btnSend.IsEnabled = false;
-				}
-				else{
+				else
+					btnChangeNick.IsEnabled = false;
+			}
+			else{
+				if(!hasServerStarted)
 					btnStart.IsEnabled = true;
-				}
+				else
+					btnChangeNick.IsEnabled = true;
 			}
 		}
 
@@ -155,16 +159,14 @@ namespace MessageRelaySystem {
 						break;
 
 					case PackageStatus.NickUpdate:
-						string oldNick = string.Empty;
 						for(int i = 0; i < nickArray.Length; ++i){
 							if(string.Equals(nickArray[i], package.Information.Item2)){
-								oldNick = nickArray[i];
-								nickArray[i] = package.Information.Item2;
+								nickArray[i] = package.Information.Item3;
 								break;
 							}
 						}
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + oldNick + " changed to " + package.Information.Item2 + Environment.NewLine);
+							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + " changed to " + package.Information.Item3 + Environment.NewLine);
 							foreach(var nick in nickArray)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
@@ -186,6 +188,14 @@ namespace MessageRelaySystem {
 			Task.Factory.StartNew(()=>{
 				networkServer.ConnectToRemote(ip);
 			});
+		}
+
+		private void btnChangeNick_Click(object sender, RoutedEventArgs e) {
+			string oldNick = userAccount.UserNick;
+			userAccount.UserNick = txtNick.Text;
+
+			Task.Factory.StartNew(()=>{ networkServer.Send(PackageStatus.NickUpdate, oldNick); });
+			txtStatus.Text = "Nick change: " + oldNick + " to " + txtNick.Text;
 		}
 
 	}

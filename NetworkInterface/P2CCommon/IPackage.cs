@@ -14,7 +14,7 @@ namespace P2CCommon
 
 		PackageStatus PackageStatus{ get; }
 
-		Tuple<Guid, string> Information{ get; }
+		Tuple<Guid, string, string> Information{ get; }
 
 		int Port{ get; }
 
