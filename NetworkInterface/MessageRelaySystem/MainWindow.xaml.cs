@@ -126,7 +126,7 @@ namespace MessageRelaySystem {
 			}).ConfigureAwait(false);
 
 			txtChatWindow.InvokeIfRequired(()=>{
-				txtChatWindow.AppendText(userAccount.UserNick + ":  " + Environment.NewLine + txtMessage.Text + Environment.NewLine);
+				txtChatWindow.AppendText(userAccount.UserNick + ":  " + txtMessage.Text + Environment.NewLine);
 				txtMessage.Clear();
 				txtMessage.Focus();
 				txtStatus.Text = ++messageSentCounter + " Message(s) sent";
@@ -182,7 +182,7 @@ namespace MessageRelaySystem {
 					case PackageStatus.Message:
 						string message = Encoding.UTF8.GetString(userAccount.Decrypt(package.Data));
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + ":  " + message);
+							txtChatWindow.AppendText(package.Information.Item2 + ":  " + message + Environment.NewLine);
 						});
 						break;
 				}				
