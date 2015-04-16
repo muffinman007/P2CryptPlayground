@@ -20,7 +20,6 @@ using System.Windows.Forms;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Windows.Threading;
 
 using P2CCore;
 using System.IO;
@@ -38,10 +37,12 @@ namespace Network
 
 		//switch
 		bool hasStartedOnce;						// allow for loging back in when user disconnect.
+		bool hasPackage;
+
+		Package arrivedPackage;
 
 		ConcurrentDictionary<Guid, IPublicProfile>		friendsProfileDict;
 		ConcurrentDictionary<Guid, IPEndPoint>			friendsIPaddressDict;
-		ConcurrentQueue<Package>						packageQueue;
 		
 		Socket server;
 
@@ -53,24 +54,20 @@ namespace Network
 
 		int defaultPort;
 
-		Dispatcher uiDispatcher;
-
 		#endregion Fields
 
 
 		#region Constructors
 
-		public NetworkServer(IPublicProfile userPublicProfile, Dispatcher dispatcher, int port = 12345, int backlog = 100)
+		public NetworkServer(IPublicProfile userPublicProfile, int port = 12345, int backlog = 100)
 		{	
 			this.userPublicProfile = userPublicProfile;
 
-			uiDispatcher = dispatcher;
-
 			hasStartedOnce = false;
-				
+			hasPackage = false;
+	
 			friendsProfileDict		= new ConcurrentDictionary<Guid,IPublicProfile>();
 			friendsIPaddressDict	= new ConcurrentDictionary<Guid,IPEndPoint>();
-			packageQueue			= new ConcurrentQueue<Package>();
 
 			defaultPort = port;
 
@@ -101,14 +98,10 @@ namespace Network
 		{
 			get
 			{
-				if(!packageQueue.IsEmpty){
-					Package arrivedPackage;
-					packageQueue.TryDequeue(out arrivedPackage);
+				if(hasPackage)					
 					return arrivedPackage;
-				}
-				else{
+				else
 					return null;						// should we return an empty package?
-				}
 			}
 		}
 
@@ -384,7 +377,8 @@ namespace Network
 					break;
 
 				case PackageStatus.Message:
-					// message is handle in the main program
+					arrivedPackage = deliveryPackage;
+					hasPackage = true;
 					break;
 
 				case PackageStatus.NickUpdate:
@@ -397,13 +391,11 @@ namespace Network
 					friendsIPaddressDict.TryRemove(deliveryPackage.Information.Item1, out dummyEndPoint);
 					friendsProfileDict.TryRemove(deliveryPackage.Information.Item1, out dummyProfile);
 					break;			
-			}
-			
-			packageQueue.Enqueue(deliveryPackage);
+			}		
 
-			uiDispatcher.Invoke(()=>{
-				P2CDS(this.Package);					// let subscriber know they have a package
-			});
+		
+			P2CDS(deliveryPackage);					// let subscriber know they have a package
+		
 		}	
 
 

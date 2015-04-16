@@ -32,8 +32,9 @@
 		<Button x:Name="btnChangeNick" Content="Change Nick" HorizontalAlignment="Left" Margin="251,10,0,0" VerticalAlignment="Top" Width="86" IsEnabled="False" Click="btnChangeNick_Click"/>
 		<TextBox x:Name="txtPort" HorizontalAlignment="Left" Height="23" Margin="457,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="69"/>
 		<Label Content=":" HorizontalAlignment="Left" Margin="445,39,0,0" VerticalAlignment="Top"/>
-		<TextBox x:Name="txtCustomPort" HorizontalAlignment="Left" Height="23" Margin="636,444,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64"/>
-		<Label Content="Port" HorizontalAlignment="Left" Margin="599,442,0,0" VerticalAlignment="Top"/>
+		<TextBox x:Name="txtCustomPort" HorizontalAlignment="Left" Height="23" Margin="636,440,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64"/>
+		<Label Content="Port" HorizontalAlignment="Left" Margin="599,439,0,0" VerticalAlignment="Top"/>
+		<Label x:Name="lbHack" Content="Hack Label" HorizontalAlignment="Left" Margin="370,10,0,0" VerticalAlignment="Top" FontSize="8" Width="52" Height="22"/>
 
 	</Grid>
 </Window>

@@ -167,6 +167,14 @@ namespace MessageRelaySystem {
         #line default
         #line hidden
         
+        
+        #line 37 "..\..\MainWindow.xaml"
+        [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        internal System.Windows.Controls.Label lbHack;
+        
+        #line default
+        #line hidden
+        
         private bool _contentLoaded;
         
         /// <summary>
@@ -280,6 +288,9 @@ namespace MessageRelaySystem {
             return;
             case 16:
             this.txtCustomPort = ((System.Windows.Controls.TextBox)(target));
+            return;
+            case 17:
+            this.lbHack = ((System.Windows.Controls.Label)(target));
             return;
             }
             this._contentLoaded = true;
