@@ -149,7 +149,7 @@ namespace MessageRelaySystem {
 				switch(package.PackageStatus){
 					case PackageStatus.Connect:
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.PublicProfile.UserNick + " joined." + Environment.NewLine);
+							txtChatWindow.AppendText(package.PublicProfile.UserNick + " joined." + Environment.NewLine);
 							txtFriendsList.AppendText(package.PublicProfile.UserNick + Environment.NewLine);
 						});
 						break;
@@ -159,7 +159,7 @@ namespace MessageRelaySystem {
 														  where !String.Equals(nick, package.Information.Item2)
 														  select nick;
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + " logged out." + Environment.NewLine);
+							txtChatWindow.AppendText(package.Information.Item2 + " logged out." + Environment.NewLine);
 							foreach(var nick in listOfNicks)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
@@ -173,7 +173,7 @@ namespace MessageRelaySystem {
 							}
 						}
 						txtChatWindow.InvokeIfRequired(()=>{
-							txtChatWindow.AppendText(Environment.NewLine + package.Information.Item2 + " changed to " + package.Information.Item3 + Environment.NewLine);
+							txtChatWindow.AppendText(package.Information.Item2 + " changed to " + package.Information.Item3 + Environment.NewLine);
 							foreach(var nick in nickArray)
 								txtFriendsList.AppendText(nick + Environment.NewLine);
 						});
